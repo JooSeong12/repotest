@@ -1,0 +1,143 @@
+자바
+
+calss로 시작하고 main함수
+
+변수의 종류
+boolean >> true, false 1byte
+int >> 정수 4byte
+double >> 실수 8byte
+char >> 문자 2byte
+String >> 문자열 얘는 클래스인데 워낙 많이 써서 따로 new연산자 안씀
+
+클래스 변수
+메인클래스 이외에 다른 클래스들은 데이터타입으로 생각해라
+같은 패키지 안에서는 다른 클래스를 참조할 수 있다
+클래스 이름 바꾸려면 우클릭 Refactor >> rename
+
+void >> 어떤 함수가 실행되었을 때 내가 돌려받을 값이 없다는 뜻
+
+class >> new를 통해서 생성 될 애들 object >> 생성된 결과는 인스턴스(instance)
+
+final >> 해당 값을 바꾸지 못하게 하는 것 
+final String name = "안유진"; >> 다른 클래스에서 바꾸려도해 바꿀 수 없음
+
+AnYuJin anYuJin = new AnYuJin(); >> AnYuJin class를 IVE class에서는 anYuJin으로 표기하겠다
+System.out.println(anYuJin.name); >> IVE 클래스에서 AnYuJin 클래스의 name이라는 변수를 프린트한다.
+
+
+myCarTest 패키지
+myCar class
+1. Car를 생성
+2. 색상을 부여
+3. 속도를 높여보고 현재속도 파악
+4. 속도를 줄여보고 현재속도 파악
+
+
+클래스 : car                               
+------------------------
+멤버변수
+브랜드명 : brand(현대)
+차종 : carName(소나타)
+색상 : color
+속도 : speed
+-----------------------
+메서드
+가속 : speedUp() --- 속도값을 주어서 변경하도록 합니다. (현재 속도는 50KM입니다.)
+100km 이상이면 "과속입니다."
+멈춤 : stop () > 한번에 10km씩 감속으로 만들기 ---- 현재 속도는 40km입니다. or 멈췄습니다.
+현재속도 : currentSpeed() --- 현재 스피드는 00km입니다. 
+
+조건판단문 if(조건){
+                        참일 때;
+                } else {
+                         거짓일 때;}
+
+        if(true){
+            System.out.println("참입니다.");
+        } else {
+            System.out.println("거짓입니다.");
+
+
+mysql
+cmd창 >> mysql 엔터 >> mysql -u root -p 엔터 >> 패스워드 엔터하면 cmd상 mysql 접속
+
+CRUD
+C(create) - Insert info(새로운 정보를 삽입하는것)
+insert into 테이블명(필드1, 필드2, 필드3....) values(값1, 값2, 값3...);
+
+insert into professor(name, belong, phone) values('김주성','EZN','010-1124-1125')
+>> id필드를 안쓰는 이유는 auto_increment로 지정해서 자동으로 증가하기때문에 넣을필요없음
+
+insert into professor(name, belong, phone) values('유재석', 'IDE', '010-1234-5678');
+insert into professor(name, belong, phone) values('황영조', 'MSE', '010-2134-2443');
+insert into professor(name, belong, phone) values('케이멀', 'ESE', '010-2342-4343');
+
+
+insert into professor values(100, '홍길동', 'IDE', '010-7899-7899'); >> 삽입하려는 데이터가 테이블의 모든 필드의 정보라면
+굳이 insert into professor(name, belong, phone) 이런식으로 테이블명 뒤에 필드명을 쓸 필요 없음
+
+insert into professor(name, belong, phone) values('강감찬', 'ESE', '010-1111-1112'); 이렇게 100번 홍길동 뒤에 풀로 적어서
+넣으면 자동으로 5번부터 없더라도 101번으로 저장됨
+삭제하고 강감찬을 다시 넣더라도 101로 복구하는게 아니고 102로 새로운 데이터로 들어간다(복구안된다는 뜻)
+
+R(read) - Select >> 보는 것
+select * from 테이블명;
+
+select * from professor;
+
+U(update) - Update >> 수정하는 것
+D(delete) - Delete >> 삭제하는 것
+
+Delete from 테이블명 where 조건;
+delete from professor where id = 101;
+이렇게 조건을 안쓰고 넣으면 테이블 전체가 나가니까 조심해야한다.
+
+DB안에는 여러 테이블이 관계를 형성해서 놓이게 된다.
+각 테이블은 엔티티(Entity)
+
+id int
+name varchar(20)
+adress varchar(100)
+이런 id name adress등 테이블을 구성하는것을(테이블의 구조) 스키마(schema)라고 한다
+스키마 관계 도식화 방식 >> ERD(Entity Relational Diagram)
+
+delete from professor >> 프로페서 테이블 안에있는데 데이터 삭제
+drop table professor >> 프로페서 테이블 자체를 삭제
+
+테이블 이름 : professor
+
+create table professor(
+id int primary key auto_increment,
+name varchar(20) not null,
+belong char(3) default 'FOO',
+phone varchar(13));
+>> not null, default 등은 제약조건(constraints)이라 한다. unique는 동일 데이터는 사용불가
+
+draw.io >> ERD(스키마 관계 도식화)사이트
+
+student
+id int 기본키 자동증가
+name vachar(20) not null
+belong char(3)
+tel varchar(13)
+p_id int >>>> 반드시 원래 테이블의 타입과 일치시켜야한다(int였으면 포린키를 쓰는 테이블에서도 int)
+
+create table student(
+id int primary key auto_increment,
+name varchar(20) not null,
+belong char(3),
+tell varchar(13),
+p_id int);
+
+
+C:\Users\EZEN>chcp
+활성 코드 페이지: 949 >> MS949 문자코드에 문제가 생김
+chcp 65001 엔터 하면 UTF-8로 바뀜
+
+use sample(데이터베이스명); 한 후
+source C:\javawork\mysql\test_schema.sql
+이런식으로 저장한 코드파일을 불러오면 자동으로 테이블이 저장된다.
+
+테이블 안에 필드만 수정하려면 ex) id의 타입만 바꾸는 작업
+alter table student
+modify column id char(8);

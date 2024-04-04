@@ -1,0 +1,98 @@
+접근제한자
+public : 어느곳이나 접근 가능
+private : 선언된 클래스 내부에서만 접근가능
+default, protected : 동일한 패키지 내에서 접근가능
+
+
+public calss Car{
+멤버변수; >> private으로 선언(외부에서 변경이 불가능 하도록), getter와 setter에 의해서만 접근 가능
+메서드;
+생성자;
+기본생성자(Default constructor) > 인자가 없는 생성자
+public Car(){}
+
+인자를 갖는 생성자;
+pulic Car(String name, int value){
+this.name = name;
+this.value = value;
+}
+Getter;
+public String getName(){
+return this.name;
+}
+Setter;
+public void setName(String name){
+this.name = name;
+}
+
+상속(extends)
+- 부모가 되는 클래스의 멤버와 메서드를 그대로 받아서 자식 클래스에서 사용 가능
+
+컴포지션(composition) > 결합
+- 이미 생성된 객체를 가져다가 쓰는 것
+- 모체 클래스에 인자를 갖는 생성자를 만든다
+  ex) public Figure(int width, int height){
+this.width = width;
+this.height = height;
+}
+- 인자별 getter setter 만들기
+width의 getter setter
+height의 getter setter
+- 자식 클래스에 부모클래스를 먼저 필드 선언
+  Figure figure;
+- 자식클래스의 인자를 갖는 생성자 만들기
+public Rectangle(Figure figure){
+this.figure = figure;
+}
+-자식클래스의 메서드에서 부모클래스의 것을 getter로 불러와 써야한다.
+public int calcArea(){
+        return figure.getWidth() * figure.getHeight();
+    }
+
+
+
+
+예제
+package : calcArea
+main() >> CalcMain class
+부모클래스 : Figure calss
+                width
+                height
+자식클래스 : Rectangle class >> name : 사각형
+                Tiangle class >> name : 삼각형
+                calcArea() > 각각 가지고 있음
+                printResult() >> 각각 가지고 있음
+                너비 : 00 높이 : 00인 0각형의 넓이는 00.00입니다.
+
+삼각형과 사각형을 각각 너비와 높이를 주어 생성한 후
+넓이를 출력하는 작업.
+
+Overloding
+>> 객체가 적을 때만 사용가능 많으면 코드가 너무 길어진다.
+     10개이상이 되면 너무 많아져서 사용하기 힘들다 ex) 전사 궁수 광전사 테스트
+
+다형성
+
+상속받은 클래스가 다양한 성격을 갖는 클래스로 만들어 지는 것
+모체의 클래스를 상속받은 자식 클래스를 heap메모리에 띄우면 자식클래스는 자기자신의 클래스와
+모체 클래스의 속성을 모두 갖게되는것을 뜻한다.
+ex) 모체인 요리사 클래스(요리)를 자식인 백종원 클래스(사업)가 상속을 받는다면
+백종원 클래스는 요리와 사업의 속성을 모두 갖게 되는것을 뜻한다.
+
+하지만 상속을 맺어 놓고 모체의 클래스를 선언하면
+ex)  백종원 e = new 백종원()이 아니라 요리사 e = new 백종원() 이런식으로 선언을 한다면
+자식의 클래스의 속성을 가져올 수는 없다
+이럴 때 백종원의 사업이라는 특성을 가져오고 싶다면 요리사라는 모체의 클래스에 사업메서드를 따로 선언해야한다.
+
+인터페이스 : 
+추상메서드 : 앱스트랙트를 써서 강제성을 부여
+
+
+
+mysql
+
+정규화
+제1 정규화 : 원자값으로 잘게 나눈다.
+제2 정규화 : 부분 함수 종속성을 제거한다.
+                ex) 회원테이블, 상품테이블, 구매테이블로 나누는 것
+제3 정규화 : 이행적 함수 종속성 제거

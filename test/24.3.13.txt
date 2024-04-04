@@ -1,0 +1,126 @@
+dice program1
+주사위 1개를 3만번 던졌을 때 각 번호가 나올 확률값을
+소수이하 6자리까지 구합니다.
+
+dice program2
+주사위 2개를 3만번 던졌을 때 합계 별 확률값을 소수이하 6자리까지 구합니다.
+
+String.format("%.6f", 값/30000) >> 30000으로 나눈값을 소수이하 6자리로 표현해주는 식
+
+정렬 알고리즘
+
+버블정렬 알고리즘
+
+
+
+mysql
+
+=세탁기(세탁물, 물, 세제,[섬유유연제]) >> 순서에 맞게 넣어야 잘 된다.[]에 들어가는것들은 없어도 되는것
+=세탁기(물,세탁물,세제) >> 제대로 안된다.
+
+>> 세탁기 함수의 예시처럼 함수를 쓸때는 들어가는 인자들과 그 순서를 알고 있어야한다.
+
+concat('**', '!!');
+>> **과 !!를 합쳐서 출력해줌
+
+예제 9번
+select member_id, member_name, gender, date_format(date_of_birth,'%Y-%m-%d') as date_of_birth
+from member_profile
+where month(date_of_birth) = 3 and tlno is not null
+order by member_id asc;
+
+논리함수
+
+if >> 엑셀이랑 똑같음
+ifnull('a', 'ERR'); >> 첫번째가 null이면 두번째값을 반환
+
+case구문
+
+select curdate() as '오늘은',
+case dayofweek(now())
+when 1 then '일요일'
+when 2 then '월요일'
+when 3 then '화요일'
+when 4 then '수요일'
+when 5 then '목요일'
+when 6 then '금요일'
+when 7 then '토요일'
+end as '무슨요일?';
+
+select curdate() as '오늘은',
+concat(mid('일월화수목금토',dayofweek(now()),1), '요일') as '무슨요일?';
+
+
+distinct 중복제거 함수
+select distinct 필드명 from 테이블명;
+select distinct belong from student; >> 스튜던트 테이블 중 소속필드의 중복값을 제거하고 출력해줌
+
+count(distinct 필드명) from 테이블명;
+select count(distinct belong) from student; >> 필드안에 종류가 몇개인지 셀때 씀
+
+select * from student limit 3; >> 위에서 3개만 표시
+select * from student order by id desc limit 3; >> id기준 내림차순으로 세개만 표시
+select * from student order by id desc limit 5, 2; >> id기준 내림차순으로 세개만 표시 5번째부터 2개만 표시
+
+
+source C:/javawork/mysql/girl_song_schema.sql;
+source C:/javawork/mysql/girl_song_data.sql;
+>> 저장한 데이터를 불러오는 것(use 데이터베이스명; 이후에 하면 됨)
+     \는 윈도우시스템이고 /로 참조해야 인식됨
+
+join >> 테이블을 연결해서 사용하는 것(포린키 프라이머리키)
+
+table name : song, girl_group
+
+song as s, girl_group as g
+
+_id(걸그룹 테이블), 걸그룹 이름(걸그룹 테이블), 대표곡(송 테이블)을 출력하고 싶다면
+
+select g._id, g.name, s.title, s.lyrics
+from girl_group as g
+inner join song as s
+on(where로 바꿔서 해도 가능) g.hit_song_id = s._id;
+>> inner join 테이블명(프라이머리키를 가진애들)
+
+join의 방식
+inner join
+
+
+left join
+select g._id, g.name, s.title, s.lyrics
+from girl_group as g left join song as s(left 기준 왼쪽에 있는 테이블거 null값 포함 다 가져온다 )
+on g.hit_song_id = s._id;
+
+select g._id, g.name, s.title
+from girl_group as g left join song as s
+on g.hit_song_id = s._id
+where g.hit_song_id is null; >> null값만 있는애를 뽑으려면 where를 써서 조건을 추가해야함
+
+
+right join
+
+select g._id, g.name, s.title
+from girl_group as g right join song as s (right 기준 오른쪽에 있는 테이블거 null값 포함 다 가져온다)
+on g.hit_song_id = s._id;
+
+가사중에 'me'를 포함하는 자료의 id, 그룹이름, 가사를 출력하세요
+
+select g._id, g.name, s.lyrics
+from girl_group as g
+inner join song as s
+on g.hit_song_id = s._id
+where s.lyrics like '%me%';
+
+데뷔해가 2011년인 그룹의 이름과 히트송을 출력하세요
+
+select g.name, s.title
+from girl_group as g
+inner join song as s
+on g.hit_song_id = s._id
+where g.debut like '2011%';
+
+
+데뷔해를 기준으로 각 해 당 데뷔한 그룹의 수를 출력하세요
+select year(debut) as '데뷔년도', count(debut) as '그룹 수' from girl_group
+group by year(debut)
+order by  year(debut) asc;

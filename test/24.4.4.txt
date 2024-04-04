@@ -1,0 +1,90 @@
+intellij 세팅방법
+
+setting > Advanced Setting > compiler > allow ... 체크
+setting > bulid, excution... > build project automatically 체크
+
+구글 확장프로그램 다운(개발자 도구 카테고리 > live reload 검색 후 live reload++ 설치)
+
+통로를 만들어놓고 배포(ex hello라는 페이지를 만들어놓고 배포)하면 클라이언트가 해당 통로로 접속
+>> 그럼 Controller에 hello라는 맵핑을 만들어놓고, thymeleaf를 통해 사이트를 가공하고 접속할 수 있도록 만들어야함
+
+th:with="item=${userList[0]}"
+with >> 변수를 선언한다는 명령어
+
+item >> 변수명
+userList[0] >> 변수값
+
+
+url 설정방법
+
+일반 방법
+    <ul>
+        <a th:href="@{/hello}">basic url</a>
+    </ul>
+표현은 localhost/hello로 표현된다.
+
+
+쿼리스트링(쿼리파라메터)
+    <ul>
+        <a th:href="@{/hello(name=${name}, age=${age})}">query param</a>
+    </ul>
+표현은 http://localhost/hello?name=장원영&age=21 로 표현된다.
+
+
+경로변수(Path variable)
+    <ul>
+        <a th:href="@{/hello/{name}/{age}(name=${name}, age=${age})}">path variable</a>
+    </ul>
+표현은 localhost/hello/장원영/21 로 표현된다.
+
+
+경로변수(Path variable) + 쿼리스트링(쿼리파라메터)
+    <ul>
+        <a th:href="@{/hello/{name}(name=${name}, age=${age})}">path variable + query parameter</a>
+    </ul>
+표현은 localhost/hello/장원영?age=21로 표현된다.
+
+vs code
+애니메이션 추가
+
+.container .item:hover{ >> 객체로 변환해주는 것
+  transform: rotate(45deg); >> 마우스 올렸을 때 회전(rotate)시켜주는 명령어
+  background-color: orange; >> 마우스 올렸을 때 변하는 색깔
+  border-radius: 50%; >> 마우스 올렸을 때 원으로 변화
+}
+
+.container .item{
+  width: 100px; 
+  height: 100px;
+  background-color: royalblue;
+  /* 박스안 글자 가운데 정렬 */
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(50px) translateY(50px) rotate(45deg) scale(1.5); >> x축 50픽셀, y축 50픽셀 옮기고 45도회전, 1.5배 크게
+  border-radius: 50%;
+}
+
+
+JSON(javascript object notation)
+배열을 표현할 때는 [] 대괄호 사용
+클래스는 {} 중괄호 사용
+
+{name : "장원영",
+age : 21}
+>> 클래스의 예시
+
+[
+  {name : "장원영", age : 21},
+  {name : "안유진", age : 22}, >> 마지막에 콤마 찍어줘야함
+]
+>> 배열안에 클래스 두개가 들어가 있는 모양
+
+[groupName : "ive"{}, {} 
+ groupName : "bts",]
+>> 객체 안에 또 다른 클래스가 들어갈 수 있다.
+
+git은 버전관리 시스템
+어떤게 삭제되고 추가되었는지 기록해주는 것
+

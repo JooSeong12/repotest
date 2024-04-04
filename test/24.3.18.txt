@@ -1,0 +1,43 @@
+user main
+userService userSevice = new userService();로 선언하고 활용가능
+adminMain adminMain = new adminMain(); 
+
+user service
+메뉴선택
+잔돈반환
+금액추가
+1004(관리자 메뉴 호출)
+
+admin main
+
+admin service
+메뉴변경
+가격변경
+재고추가
+메뉴추가
+수익확인
+
+1. adminView class - 관리자메뉴 보이기 및 메뉴선택
+adminView()
+
+2. adminService class - 관리자메뉴의 구체적 실행 서비스
+   메뉴변경 - updateMenu
+   가격변경 - updatePrice
+   재고추가 - updateStock
+   메뉴추가 - addMenu
+   수익확인 - confirmProfit
+
+3. userView calss - 사용자 화면 보이기 및 메뉴선택
+userView()
+
+4. userService calss - 사용자의 자판기 사용기능
+   메뉴선택 - outProduct
+   금액추가 - addMoney
+   잔돈반환 - returnMoney
+   관리자메뉴호출 - callAdmin
+
+5. 전체 기능을 패키지로 분리
+   화면에 보여주는 서비스 : view
+   기능을 구현하는 서비스 : service
+
+

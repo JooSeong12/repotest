@@ -1,0 +1,87 @@
+vo(Value Object)
+DTO(Data Transfer Object)
+
+
+
+
+MVC패턴?
+view : 화면구성
+model : 데이터를 관리하고 처리
+controller : 데이터 중간처리
+
+제네릭
+>> 어떤 클래스를 만들 때 타입이 정해져 있지 않으면 object로 만들어야 하는데
+     object로 생성하면 다운캐스팅 처리를 해야하는데 이것이 불편해서 제네릭을 사용
+    System.out.println(((Tiger)basket.data).name); 다운캐스팅 예시
+
+제네릭 예시
+>>BigBasket<Lion> basket1 = new BigBasket<>();
+    basket1.data = new Lion();
+    System.out.println(basket1.data.name);
+
+
+
+데이터 베이스와 연결하는 법
+JDBC(Java DataBase Connector) >> 자바를 데이터베이스와 연결시켜주는 장치
+
+file > project structure >library > +모양 클릭 > java 클릭 > 다운받은 커넥터 위치 찾아서 jar파일 클릭 > ok 클릭
+> 왼쪽에 src 밑에 extenal Library에 커넥터 생기면 된거임
+>db 패키지 만든 후 DBConn이라는 클래스 만들고 static으로 Connection(인터페이스타입, 인터페이스 아님) 만들기
+>>
+public class DBConn {
+    private static Connection dbConn;
+    public static Connection getConnection(){
+        if(dbConn == null){
+            try {
+                String dbDriver = "com.mysql.cj.jdbc.Driver";
+                String dbUrl = "jdbc:mysql://localhost:3306/teldb";
+                String dbUser = "teluser";
+                String dbPassword = "1111";
+                Class.forName(dbDriver);
+                dbConn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+                System.out.println("성공!!!");
+            } catch (ClassNotFoundException | SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+       return dbConn;
+    }
+
+    public static void close(){
+        if(dbConn != null){
+            try {
+                if(! dbConn.isClosed()){
+                    dbConn.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            dbConn = null;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+메뉴판 + 퍼머넌트
+
+네일회원권 >> 현금,카드 나뉘어져 있고 값 다름
+속눈썹 >>현금,카드 나뉘어져 있고 값 다름
+회원권 포인트는 시술 후 해당가격만큼 포인트가 차감
+
+프로모션 >> 회원제 적용 안하고 회원 비회원 가격동일
+
+직원 >> 고객 첫 방문시 맡았던 직원이 전담 직원
+           기본급있고 담당고객의 월매출 10% 인센티브 + 제품판매 5%
+특정고객에게는 메뉴판에 없는 서비스 진행하고 별도의 금액 수령
+이걸 인센티브에 반영해야함
+
+고객 >> 회원,비회원,프로모션 정보 기록해야함
+            회원은 포인트 차감 필요 프로모션은 프로모션 포인트 차감
+          매출현황은 카드, 현금 수령액 기준 확인
+          금액에 따른 포인트/잔여포인트?

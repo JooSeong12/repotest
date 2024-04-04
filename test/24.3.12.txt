@@ -1,0 +1,101 @@
+1~10까지 더하는 for 반복문
+
+int sum = 0;
+for(int i =1; i<=10; i++){
+sum = sum+i}
+
+1~10까지 빼는 for 반복문
+for(int i = 10; i <1; i--){}
+
+
+for(초기화; 조건식; 증감식) { 실행코드 }
+>> 조건식안의 값이 true라면 반복하지않고 반복문을 벗어난다
+
+while(조건식){실행코드}
+조건식의 결과가 true일 때 실행코드를 실행
+실행문이 끝나면 다시 조건식을 통해 true 또는 false를 판단하고 true면 계속 실행 false면 종료
+
+do{실행코드} while(조건식);
+중괄호 안의 실행코드를 우선 수행하고 조건식 안의 내용을검사
+조건식 결과가 true면 실행코드 반복 false면 종료
+
+
+flag = true;
+while(true){
+if(flag == false)
+   break; >> 루프를 빠져나가는것
+   continue; >> 현재의 루프를 빼고 이어가는것
+   return; >> 함수를 아예 빠져나가는거
+}
+>> 플래그가 거짓일 때 빠져나가는 와일함수
+
+do{
+  flag = false;
+} while(flag = true);
+
+
+배열
+int[] num = {1, 2, 3};
+
+for(int=0; i < num.lenth; i++){
+sout();
+}
+// advanced for >> 배열과 합쳐서 사용할때 자동으로 배열순서대로 루프가 돈다.
+for(int a : num){
+sout(a);
+}
+
+Scanner sc = new Scanner(System.in); >> 콘솔에서 입력을 받을 때
+
+chanege money 클래스 에서
+변환할 금액을 입력하세요.
+계속할까요?(Y/N)
+
+주민번호 검증 알고리즘
+9 3 1 1 2 4 1 2 1 2 3 1 5
+2 3 4 5 6 7 8 9 2 3 4 5
+
+위아래 곱해서 더한다 > 1단계
+1단계값을 11로 나눈 나머지를 구한다 > 2단계
+2단계값을 11에서 빼준다 > 3단계
+3단계 값에서 10으로 나눈 나머지를 구한다 > 4단계
+4단계 값에서 제일 마지막숫자와 비교해서 일치하는지 확인한다 >5단계
+>> 5단계에서 올바른 주민... or 잘못된 ... 출력
+
+
+로또번호 출력기
+random 클래스 함수를 이용해서 중복되지 않는 번호 6개를 생성하여 출력
+random 함수
+Random random = new Random();
+        System.out.println(random.nextInt(2)); >> 0부터 2미만의 숫자까지만 출력(0, 1만 출력)
+
+
+형변환
+int i;
+double j;
+i = (int)j;
+
+String 타입을 가진애를 int로 바꾸려면 해당과정을 거쳐야함 Integer.parseInt
+ Scanner sc = new Scanner(System.in);
+        String jumin = sc.next();
+        strJumin = jumin.split("");
+        for(int i = 0; i < intjumin.length; i++){
+            intjumin[i] = Integer.parseInt(strJumin[i]);
+
+
+mysql
+
+year(), month(), day()
+>> select year(now()); 이런식으로 합쳐서 써야함
+
+weekday()
+>> 월요일 = 0 ~ 일요일 = 6으로 숫자로 요일을 나타내줌
+
+date_format(now(), '%Y-%m-%d');
+>> 현재의 연월일을 나타내줌(Y는 대문자 표기시 4글자로 소문자로하면 2글자로)
+
+datediff, timediff
+>> 날짜와 시간을 빼서 계산해주는 함수
+
+timestampdiff(단위, 날짜1, 날짜2)
+>> 단위만큼으로 뺀값을 계산해주는 식

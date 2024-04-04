@@ -1,0 +1,10 @@
+1. DBconn 클래스를 만들어서 db와의 통로를 만든다
+2. main <> view <> service <> database 이렇게 연결되는 것(dto는 정보를 담는 그릇같은 느낌)
+3. 
+
+
+DTO클래스는 record타입으로 생성
+record타입은 표시되어 있지 않아도 getter와 toString은 자동으로 가져온다.
+
+resultset이 뭐지?
+e.getmessage?

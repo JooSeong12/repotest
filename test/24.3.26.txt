@@ -1,0 +1,72 @@
+Error(개발자가 해결할 수 없는 오류) ex) 메모리 부족
+
+Exception 예외(개발자가 예측할 수 있는 오류)
+compile exception > IDE에 구동했을 때 아래 콘솔부분에 나오는 오류
+runtime exception > 배포 후 프로그램 구동 중 발생하는 오류
+
+
+
+try{
+ 실행할 메소드나 객체 등}
+catch(검증할 exception){
+출력할 내용
+}
+ex)
+public class ExceptionTest {
+public static void divide(int a, int b) throws ArithmeticException{
+        if(b == 0) throw new ArithmeticException("0으로 나누면 안됨");
+        int c = a / b;
+        System.out.println(c);
+    }
+    public static void main(String[] args) {
+        int a = 10;
+        int b = 0;
+
+        try {
+            divide(a, b);
+        } catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+}
+
+
+정규표현식 >> 휴대폰번호 입력 받을 때, 한글로만 입력 받을 때 등등
+Pattern.matches()
+
+ex)
+public void phoneCheck(String phone) throws MyException{
+        boolean check = Pattern.matches("(010)-(\\d(3,4))-(\\d{4})", phone);
+        if(! check){
+            throw new MyException("휴대폰 입력형식은 [010-xxxx-xxxx]입니다.");
+        }
+    }
+
+
+데이터 흐름의 정석은
+database > Entity > DTO > HTML
+데이터베이스의 정보를 엔티티에 담고 DTO로 옮겨서 HTML로 전송
+굳이 Entity를 거치는 이유는 Entity는 database의 테이블과 완전히 같은 구조를 가진 클래스이고
+Entity를 이용해서 database의 테이블을 생성할 수도 있다.
+따라서 Entity는 수정을 함부로 하면 안되고 Entity가 바뀌면 database도 영향을 받기 때문에
+HTML에서 필요한 정보만 DTO를 통해서 받는다.
+
+ex) telbook 테이블에서 나이 이름만 받고싶은데 Entity에서 바로 HTML로 넘기려면 5개의 레코드를 다 보내야하지만
+ENTITY에서 DTO로 나이 이름만 보내고 DTO에서 HTML로 보낸다
+
+하지만 우리는 Entity는 빼고 database > DTO > HTML로 간략하게 진행
+
+DTO만들기
+DTO의 변수는 데이터베이스 필드의 네임과 달라도 상관없다
+각 변수별 생성자와 getter setter만들기(generate 이용)
+
+레코드(데이터베이스 레코드 아니고 자바의 레코드타입을 의미)를 이용한 불변객체
+클래스 생성 시 종류를 record로 생성
+
+PreparedStatement >> 쿼리를 자바로 가져오는 애
+DB연결시 자바의 구조(패키지, 클래스의 구조)
+db >> db와 자바를 연결해주는 connertion을 구성
+dto >> 
+exception >> db 테이블의 양식에 맞게 필터링해주는 역할(전화번호의 구성, 이름은 한글만 입력 등)
+service >> PreparedStatement를 통해 db의 쿼리 양식에 맞게 입력되도록 도와주는 역할
+view >> 자바에서 화면에 출력을 해주는 메서드들의 집합
+

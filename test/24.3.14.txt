@@ -1,0 +1,117 @@
+3개 테이블 조인
+
+student 테이블 : p_id, name
+girl_group : _id, name, hit_song_id
+song : _id, title, lyrics
+teacher : id, name, belong, phone 
+
+
+student.p_id = girl_group._id
+girl_group.hit_song_id = song._id
+teacher.id = student.p_id
+
+1. 걸그룹이름, 학생이름, 데뷔일, 노래제목
+
+select g.name as '걸그룹 명', t.name as '학생이름', g.debut as '데뷔일', s.title as '노래제목' from girl_group as g
+inner join student as t
+on g._id = t.p_id
+inner join song as s
+on g.hit_song_id = s._id;
+
+
+2. 데뷔해가 2009년인 자료중에서 학생이름이 두글자인 자료만 검색합니다.
+select g.name as '걸그룹 명', t.name as '학생이름', g.debut as '데뷔일', s.title as '노래제목' from girl_group as g
+inner join student as t
+on g._id = t.p_id
+inner join song as s
+on g.hit_song_id = s._id
+where g.debut like '2009%' and t.name like '__';
+또는
+where year(g.debut) = 2009 and char_length(t.name) = 2;
+
+3. 걸그룹이름, 학생이름, 데뷔일, 노래제목, teacher.name, teacher.phone
+
+select g.name as '걸그룹 명', t.name as '학생이름', g.debut as '데뷔일', s.title as '노래제목',
+c.name as '교수이름', c.phone '교수전화번호' from girl_group as g
+inner join student as t
+on g._id = t.p_id
+inner join song as s
+on g.hit_song_id = s._id
+inner join teacher as c
+on t.p_id = c.id;
+
+
+self join(자기자신의 테이블에서 무언가를 참조할 때 쓰임)
+
+create table emp(
+id int primary key,
+name varchar(10),
+super_id int);
+
+insert into emp values
+(2, '정과장', 1),
+(3, '최대리', 2),
+(4, '이대리', 2);
+insert into emp(id, name) values
+(1, '김사장'),
+(5, '박고문');
+
+select emp1.id, emp1.name, emp2.name from emp as emp1
+inner join emp as emp2
+on emp1.super_id = emp2.id;
+
+서브 쿼리 >> 쿼리 하나로 두개의 쿼리를 써서 join처럼 활용하는 것
+
+select * from song where lyrics like '%give%';
+
+select * from girl_group where hit_song_id = 105;
+
+select * from girl_group where hit_song_id =(select _id from song where lyrics like '%give%');
+>> 만약 가져온 결과가 한개 이상이면 =이 아니라 in으로 바꿔줘야한다.
+>> select * from girl_group where hit_song_id in(select _id from song where lyrics like '%give%');
+>> 1개짜리도 in을 사용해도 되니 그냥 in으로 쓰는게 안전하다.
+
+foreign key
+
+create table test1
+(p_id int primary key,
+p_name varchar(10));
+
+create table test2
+(c_id int,
+c_name varchar(10),
+p_id int,
+constraint fk_pid >> 제약조건
+foreign key(p_id)
+references test1(p_id) on delete cascade);
+
+on delete cascade >> 참조한 키가 삭제되면 얘도 삭제한다.
+test1의 p_id가 삭제되면 test2의 p_id도 삭제된다.
+
+insert into test1 values(1, 'IVE'),
+(2, 'BTS');
+
+insert into test2 values(1, '안유진', 1),
+(2, '정국', 2),
+(3, '뷔', 2),
+(4, '장원영', 1),
+(5, '슈가', 2);
+
+alter table test2
+add constraint fk_pid
+foreign key (p_id)
+references test1 (p_id);
+
+트랜잭션(Transaction)
+컴퓨터 공학에서의 정의 : 더이상 분할이 불가능한 업무처리의 단위
+
+start transaction; >> 트랜잭션의 시작
+
+insert into test2 values(2, '장원영', 1);
+
+rollback; >> 롤백하면 장원영 입력한게 취소되고 사라진다.
+
+commit; >> 저장이되고 트랜잭션 끝
+
+
+

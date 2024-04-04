@@ -1,0 +1,67 @@
+스태틱,힙,스택 개념 재정리
+오버로딩 개념 정리
+
+1. 절차지향적인 프로그램
+2. 객체지향프로그램(OOP = object oriented programming)
+3. 객체지향의 특징
+ - 정보의 은닉화
+ - overloading(메서드 하나로 여러개에 활용하는 것)
+ - overriding()
+ - 다형성()
+ - 상속의 개념(모체 메서드의 기능을 상속받으면 모체의 기능을 사용할 수 있는 것)
+
+접근제어자
+private = 해당 클래스 외 외부 클래스에서는 참조가 안된다(내부클래스에서만 사용가능)
+protected = 해당 패키지 내에서만 참조 가능(다른 패키지에서는 사용불가)
+void만 썻을 때 = protected와 같음
+public = 아무데서나 사용가능
+
+기본생성자(Default constructor)
+Cat whiteCat = new Cat(); 의 cat() 이 부분은
+public Cat(){} 이것을 생략한 것임
+
+힙안에 있는애들이 instance
+
+private형태를 다른 클래스에서 불러오려면
+setter(받아오는 것)에 
+getter(불러오는 것)
+
+this >> 인스턴스 내에 있는 변수로 알기 쉽게 가독성을 높여주는 것
+
+상속 >> 모체의 것을 가져다 쓰는 것
+컴포지션 >> 완성된걸 가져다 쓰는 것
+
+상속(Extends)중 모체와 본인의 것 중 겹치는게 있으면 본인의 것을 가져온다
+ex) 모체인 기본햄버거의 name과 본인의 치즈햄버거의 name이 겹치면 치즈햄버거를 가져옴
+상속을 선언하면 힙에 본인과 모체의 클래스가 같이 올라가서 본인에게 없으면 모체로 거슬러 올라가서 가져옴
+System.out.println(cheeseHamburger.firstContent); 한번에 모체의 내용 찾기 가능
+
+컴포지션으로 하면 본인의 힙공간안에 모체를 소유하고 있고(모체의 메모리 위치를 알고있는 상태)
+모체의 것을 가져오려면 모체의 힙공간으로 가서 찾아야한다.
+System.out.println(chickenHamburger.hamburger.firstContent); 모체의 메모리로 이동해서 한번 더 찾아야함
+
+
+mysql workbench
+
+db생성하는 법 >> 왼쪽위 원통모양 클릭 후 db이름 설정하고 apply
+
+테이블 생성하는법 >> 왼쪽 schema에서 해당 데이터베이스를 펼치고 tables에 우클릭하고 create table
+
+관계설정 >> 왼쪽 위 database > reverse engineer > next > 비번입력 > next > 원하는 db클릭하고 끝까지 next
+> draw.io 같은 화면이 나옴 >> 다이어그램 관계설정 후 왼쪽위 file > save model
+
+forward engineer 하는법
+>> 왼쪽위 database(diagram 켠 상태에서) > forward engineer > next 쭉 하다가 > 완료 > 그럼 관계설정이 된다.
+
+on delete cascade 설정
+> 좌측 스키마창에 해당 테이블에서 설정버튼 클릭 > 포린키로 넘어가서 우측 포린키 옵션에 on delete cascade로 설정
+
+테이블에 데이터 넣는법
+> 해당 데이터를 메모장에 복붙하기 > 컨트롤 + h 로 작은따옴표( ' )없애기 > 다른이름으로저장
+> 파일유형을 모든 파일로 변경 > 파일명.csv로 저장
+> 해당 테이블 우클릭 > table data import wizard 클릭 > browse 클릭 > csv저장한 파일 찾아서 클릭 
+> 넥스트 피니쉬 하면 끝
+
+엑셀버전
+> 해당 데이터 엑셀에 복붙 > 데이터 > 텍스트 나누기 > 구분기호로 분리됨 클릭 > 다음 > 구분기호 중 쉼표만 클릭
+> 열 데이터 서식에 일반만 클릭 > 마침 > 컨트롤 + h > 작은따옴표 삭제 > 다른이름으로 저장 > csv파일로 저장
