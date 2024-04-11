@@ -1,0 +1,26 @@
+부트스트랩
+메인에서 아래로 좀 내려가면 CDN으로 포함시키기부분에서 링크를 복사
+인텔리제이에서 원하는 html파일 헤드에 link를 붙여넣기(meta와 title사이에, css파일에서 링크넣는것과 동일)
+
+로그 남기는법
+1. 클래스 위에다가 @Slf4j 선언(@Controller 처럼 똑같이 선언)
+2. 출력할 데이터를 log.info(); 안에 넣는다(println과 같은 기능이지만 로그기록으로 남긴다.)
+
+
+git 사용 프로세스
+1. project >> issue로 전환(project에서 in progess 중 convert to issue로 설정)
+  >> issue 설정 후 development에서 create a branch 클릭 >> 브랜치 이름 설정 후 create branch 클릭
+2. client
+- pull/fetch
+- checkout 브랜치(메인말고 만들걸로 변환) >> git checkout '브랜치명'
+-pull/fetch
+-git add >> 스테이징하는 것
+-git commit
+-git push
+3. github에서 pull request
+4. merge(main 브랜치로 합치는 것)
+5. branch 삭제(새로 만들었던 브랜치)
+6. client
+- pull/fetch
+-checkout main
+- git branch -d '브랜치명' >> vscode 터미널에서 새로운 브랜치 삭제해주는 명령어
