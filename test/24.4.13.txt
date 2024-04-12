@@ -1,0 +1,38 @@
+Lombok 추가방법
+
+start.spring.io들어가서 우측 add dependencies들어가서
+lombok검색 후 추가하고 아래에 explorer들어가서 코드 복사 후
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok' >> 이 두줄이 복사 할 코드
+인텔리제이에서 build.gradle클래스 들어가서 해당 코드 붙여놓고 
+우측에 생기는 코끼리 모양 생기면 그거 클릭
+그 후 인텔리제이 세팅에 들어가서 plug in들어가서 lombok검색 후 설치
+
+new java class에서 enum으로 선택해서 생성
+enum은 선택지를 줄때 사용
+
+@Getter
+public enum Language {
+    JAVA("자바"), C("C언어"), CPP("C++"), PYTHON("파이썬");  >> JAVA는 데이터에 넘어가는값, ("자바")는 페이지에 보여지는 값
+    private final String description; >> html이나 controller에서 참조해서 사용하려면 필요
+
+    Language(String description) {  >> final로 선언했고 최초값이 없어서 만들어줘야함
+        this.description = description;
+    }
+}
+
+컨트롤러에서
+@ModelAttribute("language")
+    private Language[] languages(){  >> 여러개(자바 파이썬 등등 값)을 배열로해서 가져옴
+        return Language.values();
+    }
+
+log.info("Language = " + dto.getLanguage()); >> postmapping 안에 넣어줌
+
+<div>전공 선택(한 개만 선택 가능)</div>
+                <div th:each="lang : ${language}" class="form-check form-check-inline"> >> for루프 돌리는 것
+                    <input type="radio" th:field="*{language}" th:value="${lang.name}" class="form-check-input">
+                    >> field는  value는 JS에서 인식 class는 css에서 인식해서 사용하는 것
+                    <label th:for="${#ids.prev('language')}" th:text="${lang.description}" class="form-check-label"></label>
+                </div>
+
