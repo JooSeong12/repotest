@@ -1,0 +1,79 @@
+https://start.spring.io/
+추가할 dependence
+
+Spring Boot DevTools
+Lombok
+Spring Web
+Thymeleaf
+MySQL Driver 
+Spring Data JPA
+
+database관련 설정을 하려면 resorce아래에 application.properties클래스에 설정을 한다.
+(DB conn같이 DB와 연결되는 설정을 뜻함)
+
+#MySQL 연결
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#데이터베이스 설정
+spring.datasource.url=jdbc:mysql://localhost:3306/member
+spring.datasource.username=root
+spring.datasource.password=1111
+
+#hibernate(DB에 날리는 모든 query / DDL, DML을 보여준다.)
+spring.jpa.properties.hibernate.show_sql=true
+#쿼리 구문을 예쁘게 보여주는 역할
+spring.jpa.properties.hibernate.format_sql=true
+#데이터베이스  테이블을 자동으로 생성(create, update, validate, none)
+update는 내가 바꾼것만 수정해주는 것
+validate는 유효성 검사만 하는것
+
+spring.jpa.hibernate.ddl-auto=create >>> create로 실행시키면 이전에 있던 DB가 다 날아감
+따라서 처음에 생성할 때만 create로 생성하고 나중에 수정하거나 배포단계에서는 update 또는 validate로 해야한다.
+
+#샘플데이터 쿼리를 실행해서 DB를 초기화 할 때
+#spring.jpa.defer-datasource-initialization=true
+#spring.sql.init.mode=always
+
+#hibernate이 보여주는 로그에 있는 ?값을 구체적으로 보여주는 설정
+logging.level.org.hibernate.type.description.sql=trace
+#Mysql 방언(dialect) 설정하기
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+
+
+
+entity 패키지 만들고 아래 DB명과 같은 클래스 만들기
+해당 클래스 위에
+@Entity 
+@Table(name="member") >> ""안에는 DB명이 들어가야함
+@Data
+세개의 어노테이션 추가
+
+public class Member {
+    private Long id;
+    private String name;
+    private int age;
+    private String addr;
+}  >>> 테이블 안에 들어갈 컬럼들을 선언
+
+어노테이션을 추가
+public class Member {
+    @Id // primarykey 라는 뜻
+    @Column(name="id") >> 컬럼명을 나타내줌
+    @GeneratedValue(strategy = GenerationType.AUTO) >> autoincrese 설정
+    private Long id;
+    @Column(name="name",length = 40, nullable = false) >> 해당 컬럼의 길이(varchar 40이라는 뜻)와 공백 없이로 설정
+    private String name;
+
+    private int age;
+    @Column(name="address", length = 200)
+    private String addr;
+}
+
+repository 생성
+패키지 생성하고 interface로 생성
+
+@Repository >> repository 어노테이션 추가
+public interface MemberRepository extends JpaRepository<Member, Long> {
+} >> jpaRepository 상속받고 <entity로 만든 클래스명, primary키의 타입> 이렇게 넣어준다.
+
+
+sourcetree 다운
