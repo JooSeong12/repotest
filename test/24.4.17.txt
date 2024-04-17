@@ -1,0 +1,108 @@
+자바 스크립트
+
+
+export const questions =
+const는 상수를 선언할 때 사용하는 것(final로 선언하는것과 같은 느낌)
+questions 는 변수 이름
+
+DOM(Document Object Model) >> 
+
+export const questions = [
+  {
+    number: '01',
+    question: '곧 크리스마스! 회사에서 크리스마스 파티 스텝을 모집한다는데?',
+    choices: [
+      { text: '파티 스텝은 못하지ㅎ...<br>(그래도 파티는 재밌겠다 히히)', value: 'i' },
+      { text: '재밌겠다!<br>○○한테 같이 지원하자고 해야지~', value: 'e' }
+    ]
+  },
+  {
+    number: '02',
+    question: '해외 출장이 잡혔다!<br>전날 잠들기 전 나는?',
+    choices: [
+      { text: '짐 다 챙겼고 일찍 자야지~', value: 's' },
+      { text: '다 챙겼겠지?<br>여분 옷을 좀 더 챙길까..(뒤척뒤척)', value: 'n' }
+    ]
+  }
+]
+>>> questions라는 이름을 가진 배열로 선언한 것이고
+      각각의 {}안에 들어가 있는 것들이 배열안에 들어가있는 인자들이다.
+      하지만 JS에서 {}가 객체라고 인식한다.
+      number01이 속한 {}는 questions[0]의 인자이고 그 내용물은 객체(object)이다.
+
+각각 인자안의 값들을 불러오려면
+{
+    number: '01',   >>>>>> questions[0].number >> 01
+    question: '곧 크리스마스! 회사에서 크리스마스 파티 스텝을 모집한다는데?', >>> questions[0].question >> 곧 크리스마스....
+    choices: [
+      { text: '파티 스텝은 못하지ㅎ...<br>(그래도 파티는 재밌겠다 히히)', value: 'i' }, >> questions[0].choice[0].text >> 파티....
+      { text: '재밌겠다!<br>○○한테 같이 지원하자고 해야지~', value: 'e' } >>questions[0].choice[1].text >> 재밌겠다!......
+    ]                                                                                     >>questions[0].choice[0].value >> e
+  }
+
+
+ <script type="module" defer src="./js/questions.js"></script>
+>> html파일 헤드에 넣기(링크기능과 비슷하지만 js의 데이터를 가져오는 것
+
+
+----------------------------------------------------------------------------------------------------------------------------
+question.js 생성
+
+// data.js 가져오기 -- 배열로
+import {questions} from './data.js'
+
+// question.html에 있는 각 태그위치를 정의(변수로)
+const progressValueEl = document.querySelector('.value')
+const numberEl = document.querySelector('.number')
+const questionEl = document.querySelector('.question')
+const choice1El = document.querySelector('.choice1')
+const choice2El = document.querySelector('.choice2')
+>> document는 html에서 제일 상위에 있는 것
+     querySelector()는 괄호 안에 있는 것의 이름과 비교하여 HTML 파일에서 같은 이름을 가진 클래스의 위치에 전달해줌
+
+// MBTI 타입 저장하는 변수
+let mbti = ""
+// 선택버튼에 EventListener를 달아놓는다.  >> click을 기다렸다가 click했을 때 반응하도록 하는 것
+choice1El.addEventListener('click', function(){
+  // console.log("첫번째 단추가 눌렸습니다.")
+  nextQuestion(0) >> 다음 질문으로 넘어가게 하는 함수
+})
+choice2El.addEventListener('click', function(){
+  // console.log("두번째 단추가 눌렸습니다.")
+  nextQuestion(1)
+})
+
+let currentNumber = 0 >> 변수 선언
+
+function renderQuestion(){ >> 함수선언 메서드와 같은 기능
+  const question = questions[currentNumber]
+  numberEl.innerHTML = question.number  >> innerHtml은 HTML파일 중<div class="number">00</div> 여기의 00에 해당됨
+  questionEl.innerHTML = question.question
+  choice1El.innerHTML = question.choices[0].text
+  choice2El.innerHTML = question.choices[1].text
+}
+
+function nextQuestion(choiceNumber){  >> 다음 질문으로 넘어가게 하는 함수
+  const question = questions[currentNumber]
+  if(currentNumber === questions.length - 1){
+  // 결과 페이지 보이기
+  showResultPage()
+  return
+  }
+// 해당 MBTI의 타입을 읽어와야함.
+  mbti = mbti + question.choices[choiceNumber].value >> mbti 결과가 쌓이게 하는 것
+  console.log("mbti = " + mbti)
+  currentNumber = currentNumber + 1;
+  progressValueEl.style.width = (currentNumber + 1) * 10 + '%' >> 단계 진행시 프로그래스바 채우는 것
+  renderQuestion()
+}
+
+function showResultPage(){ >> 결과페이지 보여주는 함수
+  // http://127.0.0.1:5500/result.html?mbti=istj
+  location.href = './result.html?mbti=' + mbti
+}
+
+renderQuestion() >> 함수를 실행해주는 것(이렇게 선언을 안하면 함수가 실행되지 않아서 적용이 안됨)
+
+----------------------------------------------------------------------------------------------------------------------------
+
