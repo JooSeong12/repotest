@@ -1,0 +1,55 @@
+www.mockaroo.com >> 데이터 대량으로 생성해주는 사이트
+대량생성 후 data.sql에 복붙
+=================================================================================
+@Entity
+@Data
+public class Users {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String email;
+    @Enumerated(EnumType.STRING)
+  >> gender를 enum타입으로 새로만들고 이렇게 세팅 enum타입은 그냥 두면 숫자로 데이터베이스에 저장되기 때문에 원형 그대로 스트링타입으로 저장
+    private Gender gender;
+    @Column(name="like_color")
+    private String likeColor;
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+}
+데이터 대량 생산 후 새로운 엔티티에 테이블을 세팅
+=================================================================================
+public enum Gender {
+    Male,
+    Female
+}
+
+이렇게 지정해두면 데이터에 male이라면 1로 저장, female이라면 2로 저장된다.
+이러면 나중에 순서바꿧을 때 헷갈리니까
+엔티티에 @Enumerated(EnumType.STRING) 를 추가해주는 거임
+이후에 프로그램 돌려주면 새로운 테이블에 데이터 저장되어있음
+=================================================================================
+
+gitignore란?
+ Git 버전 관리에서 제외할 파일 목록을 지정하는 파일이다. git으로 프로젝트를 관리할 때,
+ 그 프로젝트 안의 특정파일들은 Git으로 관리할 필요가 없는 경우가 있다.
+
+gitignore.io 들어가서
+검색창에
+windows, macOS, visualStudioCode, intellij+aa, java, gradle을 채운다음 생성 클릭
+
+나온 코드를 복사해서
+intellij에 build.gradle 위에 .gitignore에 붙여넣기
+
+bootstrap > components > Alerts에서 dismissing에 있는 코드 복사 후
+header html 에서 </nav> 아래에 복사
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<strong>에 <strong th:text="${msg}"> 넣기
+
+delete 포스트 맵핑에
