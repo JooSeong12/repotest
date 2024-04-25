@@ -1,0 +1,88 @@
+check.js 파일
+
+function check(){
+//    alert("버튼이 눌렸습니다.") //테스트하는 메서드임
+    if(document.getElementById("title").value.trim().length == 0){
+        alert("제목이 입력되지 않았습니다.")
+        document.getElementById("title").focus();
+        return false
+    }
+    if(document.getElementById("contents").value.length == 0){
+            alert("내용이 입력되지 않았습니다.")
+            document.getElementById("contents").focus();
+            return false
+        }
+    alert("입력이 완료되었습니다.")
+    document.getElementById("frm").submit()
+    return true
+}
+
+function res(){
+    alert("처음부터 다시 입력합니다.")
+    document.getElementById("frm").reset()
+    document.getElementById("title").focus();
+}
+=================================================================================
+new.html 수정사항
+
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/js/check.js}"></script>  >> 스크립트 링크 추가
+</head>
+<body>
+<div class="content" layout:fragment="content">
+    <form id="frm" class="container" th:action="@{/articles/insert}" method="post">  >> id 추가
+        <div class="mb3">
+            <label class="form-label">제목</label>
+            <input id="title" type="text" class="form-control" th:field="${dto.title}"> >> id 추가
+        </div>
+        <div class="mb3">
+            <label class="form-label">내용</label>
+            <textarea id="contents" class="form-control" row="3" th:field="${dto.content}"></textarea> >> id 추가
+        </div>
+        <input type="button" value="저장" class="btn btn-primary" onclick="check()">  >> type바꾸로 onclick추가
+        <input type="button" value="다시" class="btn btn-primary" onclick="res()">     >> 리셋버튼 추가
+        <a href="/">Back</a>
+    </form>
+</div>
+</body>
+</html>
+=================================================================================
+
+@Query(value = "select s.student_num, s.student_name, e.kor, e.math, e.eng, e.hist, sum(e.kor+e.math+e.eng+e.hist), sum(e.kor + e.eng + e.math + e.hist)/4 from students as s\n" +
+            "left join exam as e\n" +
+            "on s.student_num = e.exam_num\n" +
+            "group by s.student_num")
+    List<Querys> querys();
+
+public List<QueryDto> showGrade(){
+        List<QueryDto> dtoList = queryRepository.querys().stream().map(x->QueryDto.fromQueryEntity(x)).toList();
+        return dtoList;
+    }
+
+
+@GetMapping("grade")
+    public String showGrade(Model model){
+        List<QueryDto> dtoList = studentService.showGrade();
+        model.addAttribute("dto", dtoList);
+        return "/articles/grade";
+    }
+
+
+value = "select new com.example.student.dto.StudentDto(s.student_num, s.student_name, e.kor, e.math, e.eng, e.hist, e.kor+e.math+e.eng+e.hist as sumGrade, (e.kor + e.eng + e.math + e.hist)/4 as avgGrade) from students as s\n" +
+            "left join exam as e\n" +
+            "on s.student_num = e.exam_num\n" +
+            "group by s.student_num =: student_num"
+
+"select * from student"
+
+querys.getKor(), querys.getMath(), querys.getEng(), querys.getHist(),
+                querys.getSumGrade(), querys.getAvgGrade()
+
+
+
+StudentDto(student_num=10101, student_name=김행복, phone=010-1111-2222, gender=M, addr=서울 동대문구 휘경1동, examDto=ExamDto(exam_num=10101, kor=98, math=91, eng=95, hist=90))
