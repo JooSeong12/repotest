@@ -1,0 +1,558 @@
+github에서 data.sql 다운받아서 myboard프로젝트 data에 붙여넣기
+==============================================================================
+show_all.html 복사해서 show_all_list.html 생성
+bootstrap > docs >components > pagination > 제일 첫번째 overview 코드 복사 후
+show_all_list.html의 </table>아래에 붙여넣기
+==============================================================================
+header.html에서 navbar 부분 중 한개를
+<li class="nav-item">
+                        <a class="nav-link" th:href="@{/articles/paging}">Paging List</a>
+                    </li>     로 변경
+==============================================================================
+articleController에 getMapping작성
+
+    @GetMapping("paging")
+    public String mainView(Model model,
+                           @PageableDefault(page = 0, size = 10, sort = "id",  >> page의 디폴트값 만드는거
+                           direction = Sort.Direction.DESC)Pageable pageable){ >> direction은 sort의 방향을 정하는거
+       Page<Article> paging = articleService.pagingList(pageable);
+       model.addAttribute("paging", paging);
+        return "articles/show_all_list";
+
+==============================================================================
+articleService에 메서드 작성
+
+public Page<Article> pagingList(Pageable pageable) {
+       return articleRepository.findAll(pageable);
+    }
+
+==============================================================================
+getMapping에 추가
+
+@GetMapping("paging")
+    public String mainView(Model model,
+                           @PageableDefault(page = 0, size = 10, sort = "id",
+                           direction = Sort.Direction.DESC)Pageable pageable){
+        //넘겨온 페이지 번호로 리스트 받아오기
+       Page<Article> paging = articleService.pagingList(pageable);
+       // 페이지 블럭 처리(1, 2, 3, 4, 5)
+       int totalPage = paging.getTotalPages();  >> 토탈페이지를 선언(getTotalPage는 java에서 제공하는 Page인터페이스에서 자동으로 생성해줌)
+       List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), totalPage);
+      >> paginationService를 새로 만들어서 안에 메서드를 만들어야함
+       model.addAttribute("paginationBarNumbers", barNumbers);
+       model.addAttribute("paging", paging);
+        return "articles/show_all_list";
+    }
+
+==============================================================================
+PaginationService 생성 후 메서드 작성
+
+package com.example.myBoard.service;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.IntStream;
+
+@Service
+public class PaginationService {
+    private static final int BAR_LENGTH = 5; >> 밑에 바의 길이를 선언(ex 게시판 하단의 페이지 넘버 1 2 3 4 5)
+
+    public List<Integer> getPaginationBarNumbers(int currentPageNumber, int totalPages){ >> list는 object객체만 받아서 Integer로 생성
+        int startNumber = Math.max(currentPageNumber - (BAR_LENGTH/2), 0);
+       >> startNumber는 하단 바의 첫번째 숫자를 의미하고 하단바의 숫자가 커질수록 하단바의 첫번째 숫자도
+           같이 커져야 하므로 해당 수식을 넣어서 처리(ex 처음에는 1 2 3 4 5 이지만 만약 5번째 페이지를 클릭하면
+           3 4 5 6 7 로 표시되도록 하기 위해 startNumber를 수식으로 정해놔야한다.)
+           Math.max(int a, int b)는 a와 b중 더 큰 숫자를 결과로 내놓는 함수이다.
+           따라서 currentPageNumber-(BAR_LENGTH(5)/2)와 0을 비교해서 더 큰 수가 startNumber가 되는 것임
+           currentPageNumber는 현재 페이지에 따라 달라지고 5/2는 2로 고정이므로
+           currentPageNumber - 2의 결과값과 0 중 더 큰 수를 결과로 도출해서 startNumber가 되는것임
+           예를들어 현재가 5페이지라면
+           5-2=3 과 0을 비교해서 더 큰수 인 3이 startNumber가 되는것이고 그럼
+           하단 바에는 3 4 5 6 7로 표시된다.
+         int endNumber = Math.min(startNumber+BAR_LENGTH, totalPages);
+        >> Math.min은 반대로 더 작은 수를 도출
+            예를들어 startNumber가 5이고 토탈페이지가 13이라면
+            startNumber(5) + BAR_LENGTH(5) = 10 과 토탈페이지 13을 비교해 더 작은수를 도출하므로
+            5 6 7 8 9를 표시해준다.
+            만약 startNumber가 13이라면
+            13+ 5 = 18과 13을 비교해 더 작은 수가 나오므로 13이 도출되고
+            똑같이 9 10 11 12 13이 나온다(바의 길이는 5로 고정되어 있기 때문에)        
+        return IntStream.range(startNumber, endNumber).boxed().toList(); >> startNumber와 endNumber를 리스트로 반환
+    }
+}
+
+==============================================================================
+show_all_list.html 하단에 아까 붙여넣은 NAVbar를 수정
+
+ <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${paging.number} <= 0? 'disabled'">  >> 현재 페이지가 0보다 작으면 previous가 작동하지 않도록 하는 것
+                <a class="page-link"
+                                     th:href="@{/articles/paging(page=${paging.number-1})}">  >> previous를 클릭 했을 때 현재페이지보다 1작은 페이지로 이동하도록 하는 링크
+                    Previous</a>
+            </li>
+            <th:block th:each="pageNumber : ${paginationBarNumbers}">
+                <li class="page-item"><a class="page-link" th:href="@{/articles/paging(page=${pageNumber})}"
+                                         th:text="${pageNumber+1}">1</a></li>  >> +1 해주는 이유는 DB상 페이지넘버는 0부터 시작이고 실제로 페이지에 보이는것은 1부터 시작이기 때문에 맞춰주려고
+            </th:block>
+            <li class="page-item" th:classappend="${paging.number + 1} == ${paging.totalPages}? 'disabled'"><a class="page-link"  >> 현재 페이지와 토탈페이지의 숫자가 같으면 Next가 작동하지 못하도록 하는 것
+                                     th:href="@{/articles/paging(page=${paging.number+1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+==============================================================================
+==============================================================================
+==============================================================================
+==============================================================================
+
+Spring Security
+
+start.io에서 dpendencies > spring security > explore > 코드 중 security 코드 복사 후
+implementation 'org.springframework.boot:spring-boot-starter-security'
+
+build.gradle에 붙여넣고 적용하기
+==============================================================================
+이후에 프로그램 다시 돌리고 사이트 접속하면 로그인 화면 나오는데
+id : user
+비번은 로그기록 보면
+Using generated security password: 773d832d-0d33-4e63-ab7a-435e03cec0dc 이부분에 있음
+
+==============================================================================
+
+config 패키지 생성 후 SecurityConfig 클래스 생성
+
+package com.example.myBoard.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){  //암호화 해주는 역할
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests((request) -> request
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/**").permitAll())
+//                .anyRequest().authenticated())
+
+                .formLogin((form)->form.loginPage("/user/login")
+                        .loginProcessingUrl("/login")
+                         .defaultSuccessUrl("/articles/paging", true))
+
+                .logout(out-> out.logoutSuccessUrl("/user/login").logoutUrl("/logout"))
+                .csrf(csrf->csrf.disable());
+        return http.build();
+    }
+}
+
+==============================================================================
+header.html에서
+</nav> 위에 </div>위에 </div>위에 새로 코드 작성
+
+<div class="text-end">
+                <a role="button" id="signup" class="btn btn-outline-primary" th:href="@{/user/signup}">회원가입</a>
+                <a role="button" id="login" class="btn btn-outline-primary" th:href="@{/user/login}">Login</a>
+                <a role="button" id="logout" class="btn btn-outline-primary" th:href="@{/logout}">Logout</a>
+            </div>
+
+==============================================================================
+signup.html생성
+
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/js/check.js}"></script>
+</head>
+<body>
+<div class="content" layout:fragment="content">
+    <h4>회원가입</h4>
+    <form id="frm" class="container" th:action="@{/user/singup}" method="post" th:object="${userCreateForm}">
+        <div class="mb3">
+            <label class="form-label">사용자 ID</label>
+            <input id="username" name="username" type="text" class="form-control" th:field="${username}">
+        </div>
+        <div class="mb3">
+            <label class="form-label">비밀번호</label>
+            <input id="password1" name="password1" type="password" class="form-control" th:field="${password1}">
+        </div>
+        <div class="mb3">
+            <label class="form-label">비밀번호 확인</label>
+            <input id="password2" name="password2" type="password" class="form-control" th:field="${password2}">
+        </div>
+        <div class="mb3">
+            <label class="form-label">이메일</label>
+            <input id="email" name="email" type="email" class="form-control" th:field="${email}">
+        </div>
+        <div class="mb3">
+            <label class="form-label">닉네임</label>
+            <input id="nickname" name="nickname" type="text" class="form-control" th:field="${nickname}">
+        </div>
+
+        <input type="button" value="회원가입" class="btn btn-primary" >
+        <input type="button" value="다시" class="btn btn-primary" onclick="res()">
+    </form>
+</div>
+</body>
+</html>
+
+==============================================================================
+UserAccountController 생성
+
+package com.example.myBoard.controller;
+
+import jakarta.persistence.Id;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/user")
+public class UserAccountController {
+    @GetMapping("signup")
+    public String signup(){
+        return "signup";
+    }
+}
+
+==============================================================================
+entity 생성
+
+package com.example.myBoard.entity;
+
+import com.example.myBoard.constant.UserRole;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+public class UserAccount {
+    @Id
+    @Column(name = "user_id", length = 50)
+    private String username;
+    @Column(nullable = false)
+    private String userPassword;
+    @Column(length = 100)
+    private String email;
+    @Column(name="nickname", length = 50)
+    private String nickname;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+}
+
+
+==============================================================================
+DTO 생성
+
+package com.example.myBoard.dto;
+
+import com.example.myBoard.constant.UserRole;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class UserCreateForm {
+    @Size(min=3, max = 15)
+    @NotEmpty(message="사용자 ID는 필수 입니다.")
+    private String username;
+    @NotEmpty(message="비밀번호는 필수 입니다.")
+    private String userPassword1;
+    @NotEmpty(message="비밀번호 확인은 필수 입니다.")
+    private String userPassword2;
+    @NotEmpty(message="이메일은 필수 입니다.")
+    private String email;
+    private String nickname;
+}
+
+
+==============================================================================
+enum타입 userRole 생성
+
+package com.example.myBoard.constant;
+
+import lombok.Getter;
+
+@Getter
+public enum UserRole {
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
+
+    private String value;
+    UserRole(String value){
+        this.value = value;
+    }
+}
+
+==============================================================================
+UserService생성
+
+package com.example.myBoard.service;
+
+import com.example.myBoard.constant.UserRole;
+import com.example.myBoard.dto.UserCreateForm;
+import com.example.myBoard.entity.UserAccount;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    EntityManager em;
+
+    @Transactional
+    public void createUser(UserCreateForm userCreateForm) {
+        UserAccount account = new UserAccount();
+        account.setUsername(userCreateForm.getUsername());
+        account.setUserPassword(passwordEncoder.encode(
+                userCreateForm.getPassword1()
+        ));
+        account.setEmail(userCreateForm.getEmail());
+        account.setNickname(userCreateForm.getNickname());
+        if("ADMIN".equals(userCreateForm.getUsername().toUpperCase())){
+            account.setUserRole(UserRole.ADMIN);
+        } else {
+            account.setUserRole(UserRole.USER);
+        }
+        em.persist(account);
+    }
+}
+
+==============================================================================
+fragmens 밑에 form_errors.html 만들기
+
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert"
+th:if="${#fields.hasAnyErrors()}">
+    <div th:each="err : ${#fields.allErrors()}" th:text="${err}"></div>
+
+</div>
+
+==============================================================================
+signup.html에서 <form>밑에
+    <!--에러처리 하기 fragment 삽입-->
+        <div th:replace="~{fragments/form_errors :: formErrorsFragment}"></div>
+추가하기
+
+각각 <div>에서
+<div class="error-class" th:error="*{username}"></div> 모두 추가하기(사용자id, 비밀번호, 이메일 등등 항목에 모두 다)
+==============================================================================
+UserAccountController에
+if(! userCreateForm.getPassword1().equals(userCreateForm.getPassword2())){
+            bindingResult.rejectValue("password2", "passwordIncorrect",
+                    "2개의 패스워드가 일치하지 않습니다.");
+            return "signup";
+        }
+        try{
+            userService.createUser(userCreateForm);
+        } catch (DataIntegrityViolationException e){
+            e.printStackTrace();
+            bindingResult.reject("signupFailed", "이미 등록된 사용자 입니다.");
+            return "signup";
+        } catch (Exception e){
+            bindingResult.reject("signupFailed", e.getMessage());
+            return "signup";
+        }
+
+추가하기
+
+==============================================================================
+service밑에 UserDetailService 생성
+
+package com.example.myBoard.service;
+
+import com.example.myBoard.config.PrincipalDetails;
+import com.example.myBoard.entity.UserAccount;
+import com.example.myBoard.repository.UserAccountRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class UserDetailService implements UserDetailsService {
+    private final UserAccountRepository userAccountRepository;
+
+    public UserDetailService(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserAccount> account = userAccountRepository.findById(username);
+        if (account.isEmpty()){
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+        UserAccount userAccount = account.get();
+        return new PrincipalDetails(userAccount);
+    }
+}
+
+
+==============================================================================
+config밑에 PrincipalDetails 생성
+
+package com.example.myBoard.config;
+
+import com.example.myBoard.entity.UserAccount;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class PrincipalDetails implements UserDetails {
+    private UserAccount user;
+
+    public PrincipalDetails(UserAccount user) {
+        this.user = user;
+    }
+
+    public UserAccount getUser() {
+        return user;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collect = new ArrayList<>();
+        collect.add(()-> {return user.getUserRole().getValue();});
+        return collect;
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getUserPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
+
+>> 이 클래스는 springsecurity가 해당 아이디 정보를 들고다니면서 
+
+==============================================================================
+start.io > dependencies > thymeleaf와 springsecurity 추가 후 expore >
+ implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' 복사
+> build.gradle 에 붙여넣기
+
+==============================================================================
+header.html 수정(로그인 했을 때는 로그아웃만보이고 login 화면에서는 회원가입 로그인만 보이게 하고
+                      로그인 시 ADMIN, USER 권한이 있다고 뜨게 만드는 것)
+
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<!--footer fragment-->
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">Main</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/articles/insert}">Insert</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/articles/paging}">Paging List</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        ADMIN 권한이 있습니다.                      >>>>> 어드민 권한 뜨게 하는 것
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('USER')">
+                        USER 권한이 있습니다.                      >>>>> 유저 권한 뜨게 하는 것
+                    </li>
+                </ul>
+            </div>
+            <div class="text-end">
+                <a role="button" id="signup" class="btn btn-outline-primary"
+                   sec:authorize="isAnonymous()"   >> 누구나 볼 수 있게 해주는 것
+                   th:href="@{/user/signup}">회원가입</a>
+                <a role="button" id="login" class="btn btn-outline-primary"
+                   sec:authorize="isAnonymous()"  >> 누구나 볼 수 있게 해주는 것
+                   th:href="@{/user/login}">Login</a>
+                <form th:action="@{/logout}" sec:authorize="isAuthenticated()"
+                method="post">
+                    <button type="submit" class="btn btn-outline-primary">Logout</button>
+                </form>    >>>>>>>> post로 해야 로그아웃됨 그래서 로그아웃만 form으로 바꿔서 생성
+            </div>
+        </div>
+    </nav>
+    <th:block th:if="${msg} != null">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong th:text="${msg}">Holy guacamole!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </th:block>
+</div>
+</html>
+
+==============================================================================
+login.html에서 로그인 실패시 오류 보여주는 법
+<form> 밑에 에러메세지 넣기
+<div th:if="${param.error}">
+            <div class="alert alert-danger">
+                사용자 ID 또는 비밀번호를 확인해 주세요
+            </div>
+        </div>
+==============================================================================
+
+
+==============================================================================
+
+
+==============================================================================
+
+
+==============================================================================
+
+
+==============================================================================

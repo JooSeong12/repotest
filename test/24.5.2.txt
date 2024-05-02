@@ -1,0 +1,14 @@
+게시판 페이징 및 로그인 정리
+
+1. 게시판에 들어갈 데이터들을 넣는다.(data.sql)
+
+2. page list를 보여줄 getMapping작성
+@PageableDefault 어노테이션을 통해 page의 사이즈와 무슨 기준으로 정렬할지 sort를 정하고
+sort의 방향을 정해주는 direction을 지정한다.
+@PageableDefault(page = 0, size = 10, sort = "id",  >> page의 디폴트값 만드는거
+                           direction = Sort.Direction.DESC)Pageable pageable)
+
+3. service를 만들어서 page에 들어갈 값들을 다 긁어온다.
+public Page<Article> pagingList(Pageable pageable) {
+       return articleRepository.findAll(pageable);
+    }
