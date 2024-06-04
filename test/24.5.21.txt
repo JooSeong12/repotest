@@ -1,0 +1,6 @@
+postman 다운로드
+create collection > blank > 
+
+
+
+ajax

@@ -1,0 +1,53 @@
+java 1.8 다운로드 window x64
+
+다운 후 program files >> java >> 폴더이름을 첫번째 폴더를 jdk-1.8 로 변경
+(최종적으로 폴더 구성은 jdk-1.8, jdk-17, jre1.8.0_202 세개가 있어야함)
+
+path >> 환경변수 >> 시스템변수 >> 변수 이름에 JAVA_HOME, 변수값에 C:\Program Files\Java\jdk-17
+>> 시스템 변수 안에 path 더블클릭 >> 새로만들기 클릭 후 %JAVA_HOME%\bin 넣고 제일 상단으로 이동시키고 확인
+>> cmd 접속 >> java -version 입력해서 자바 버전 확인
+1.8로 바꾸려면 path >> 환경변수 >> 시스템변수 >> 아까만든 JAVA_HOME 안에 jdk-17 을 jdk-1.8로 변경
+
+https://github.com/spring-attic/toolsuite-distribution/wiki/Spring-Tool-Suite-3 >> 여기서 3.9.14에서 
+full distribution on Eclipse 4.15에 첫번째거 다운
+>> c드라이브에 spring-mvc폴더 만들어서 거기에 압축해제(동시에 workspace폴더도 만들기) >> bundle >> sts-3.9.14 release
+ >> sts.exe파일 작업표시줄 고정 >> 실행하고 browse 클릭 >> c드라이브에 workspace폴더 지정 후 런치
+
+
+tomcat 8.5 다운로드 >> 64-bit windows.zip 다운로드 >> c드라이브에 workspace폴더 만들기 > 안에 server폴더 만들고
+server 폴더 안에 tomcat 8.5 압출 풀기
+
+workspace >> .metadata >> .sts >> content폴더 생성 >>org.springframework.templates.mvc-3.2.2.zip(github에 있음) 붙여넣기 
+>> 압축풀기 >> .metadata 돌아가서 .plugins 들어가기 >> org.springsource.ide.eclipse.commons.content.core
+>> https-content.xml 붙여넣기(github에 있음)
+
+eclipse >> 왼쪽 pakage explorer에서 우클릭 >> new >> ohther >> spring 검색 >> spring legacy project 더블클릭
+>> 프로젝트 이름 기입 >> 제일밑에 spring mvc project 선택 후 next >> pakage name 기입(kr.co.***)
+>>여기까지하면 프로젝트 만들기 완료
+
+상단에 window >> preferences(setting) > general > web browser > use external web browser 선택, chrome 선택
+>> 검색창에 enc >> workspace 들어가기 >> 제일 아래 text file encode >> other 선택 후 utf-8 적용
+>> css, html, jsp 모두 동일하게 utf-8로 적용
+
+좌측 하단 servers에 있는거 우클릭 후 삭제 >> 그 자리에 create new server 생기는데 클릭 >>
+아파치 8.5 선택 후 next >> browse >> 아까 만든 workspace 폴더 선택 >> apache-tomcat-8.5.100 선택
+
+pom.xml로 이동 >> 
+<properties>에서
+<java-version>1.8</java-version> >> 1.8로 변경
+<org.springframework-version>5.2.4.RELEASE</org.springframework-version>   >> 5.2.4로 변경
+
+ <configuration>에서
+                    <source>1.8</source>  >> 1.8로 변경
+                    <target>1.8</target>  >> 1.8로 변경
+
+ctrl + shift + s는 열려있는 모든 파일 저장
+
+pakage explorer에서 프로젝트명 우클릭 >> maven >> update project(바꾼 버전 설정이 적용됨)
+
+프로젝트명 우클릭 >> run as 클릭 >> run on server 클릭 >> finish 클릭 >> 사이트 뜨면 완료
+
+
+src/main/java >>>>> intellij에서 패키지 만드는곳
+
+src > main > wabapp > WEB-INF > view >> html파일 만드는 곳

@@ -1,0 +1,61 @@
+jquery cdn 사이트 들어가서 제일 최신버전에서 minified 클릭해서 링크 복사 후
+html header부분의 title 밑에 복사
+
+<p>Hello</p>   >> $(this).hide()
+<p>Hi~~</p>   >> $("p").hide
+<p class="abc">abc</p>  >> $(".abc").hide()
+<p id="ccc">ccc</p>   >> $("#ccc").hide()
+
+
+선택자:first / last
+버튼을 누르면 첫번째 li태그에(계란말이) 노란색으로
+
+선택자:first-child / last-child
+아래 자식 list까지 포함해서 노란색으로
+
+"선택자:first" // last // even(짝수), odd(홀수)
+
+
+document.body. .......      $("*") == $("body")
+<p> ------ $("p")
+<p id="aa"> ------ $("#aa")
+<p class="bb"> ------ $(".bb")
+<a href="www.abc.com"> ----- $("a[href] = www.abc.com")   !=도 가능
+
+DOM(Document Object Model)
+
+
+Event
+- mouse : click, dblclick(더블클릭), mouseenter, mouseleave
+- keyboard : keypress, keydown, keyup
+- form : submit, change, focus, blur
+- window : load, resize, scroll, unload ......
+
+
+hover
+두가지 이벤트가 결합된 메서드 느낌
+
+
+input focus -- 들어올 때 이벤트
+input blur -- 나갈 때 이벤트
+
+
+ $("h1").on({
+    click : function () {$(this).css("background-color","red")},
+    mouseenter : function(){$(this).css("background-color","yellow")},
+    mouseleave : function(){$(this).css("background-color","pink")},
+  });
+>> on을 사용해서 여러 이벤트를 한번에
+
+
+show('slow') -- 천천히 나타나기(fast가능)
+hide(1000) -- 1초에 걸쳐 나타나기
+
+fadeIn() -- 나타내기
+fadeOut() -- 사라지기
+fadeToggle() -- 상태 두가지 스위칭 변경
+fadeTo() -- 특정한 시간동안 투명도 설정
+
+slideDown() -- 
+slideUp() -- 
+slideToggle() -- 

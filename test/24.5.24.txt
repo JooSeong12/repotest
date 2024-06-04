@@ -1,0 +1,52 @@
+method chaining
+메서드가 연쇄적으로 실행되는 것
+
+특정 컨텐츠 가져오고 셋팅하기
+-Getter의 역할
+text()  
+html()  
+val()  
+attr() 
+
+-Setter의 역할
+text(value)
+html(value)
+val(value)
+attr(value)
+
+
+특정 element 추가
+append() 뒤쪽에 추가
+prepend() 앞쪽에 추가
+
+동등추가 after(), before()
+
+remove() 자기자신 + 아래것들 지우기
+empty() 아래것들만 지우기
+
+ajax
+
+$(selector).load(url, data, callback);
+
+
+aws
+
+mobaxterm 다운(서버 접속 도구)
+
+linux 명령어
+ls >> list 보는 명령어      la -al >> 숨겨진 파일까지 보는 것
+clear >> 화면 지우기
+pwd(print working directory) >> 현재 위치보여주는것
+whoami >> 현재 로그인 한 사용자의 정보
+cd >> 폴더 이동할 때 사용
+ex) cd bin >> bin 폴더로 이동 cd / or cd .. >> 상위폴더로 이동   cd ~ >> 사용자의 홈디렉토리로 이동
+
+mkdir(make directory) > 폴더 생성
+touch >> 파일 생성  touch a.txt >> 이름과 확장자명으로 생성
+rm >> 파일 삭제   rm a.txt             rm -r user >> user폴더 삭제
+mv c.txt user >> c.txt를 user 폴더로 옮김
+
+sudo(super user do) 루트의 권한 사용
+
+sudo apt update >> 
+

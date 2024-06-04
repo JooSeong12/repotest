@@ -1,0 +1,28 @@
+mobaXterm
+
+왼쪽 session 클릭 > ssh 타입 > remote host에 aws 인스턴스 정보에 있는 퍼블릭 IPv4 주소 붙여넣기
+> specify username에는 ubuntu > 아래에 ssh settings에 user private key는 pem 파일 넣고 ok누르면 명령프롬프트 화면나옴
+
+
+
+was(Wep Application Server)
+
+tomcat 설치
+jdk 17 설치
+
+
+mybatis
+
+springboot는 3.2.6
+
+dependencies
+thymeleaf
+spring Web
+lombok
+postgre
+spring jdbc
+mybatis framework
+
+plugin에서 mybatisX 설치
+
+

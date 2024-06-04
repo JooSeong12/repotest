@@ -1,0 +1,192 @@
+지연로딩(Lazy Mapping)
+즉시로딩(Eager Mapping)
+
+
+artifact : jpatest
+
+lombok
+spring web
+jpa
+mysql
+
+연관관계
+다쪽은 포린키를 가진쪽이고 일을 클래스로 가지며 연관관계의 주인이다.
+일쪽은 다를 리스트로 가진다.
+
+=============================================================================
+properties 파일에 설정 넣기
+
+spring.application.name=jpatest
+#MySQL 연결
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#데이터베이스 설정
+spring.datasource.url=jdbc:mysql://localhost:3306/jpa-test
+spring.datasource.username=root
+spring.datasource.password=1111
+
+#hibernate(DB에 날리는 모든 query / DDL, DML을 보여준다.)
+spring.jpa.properties.hibernate.show_sql=true
+#쿼리 구문을 예쁘게 보여주는 역할
+spring.jpa.properties.hibernate.format_sql=true
+#데이터베이스  테이블을 자동으로 생성(create, update, validate, none)
+spring.jpa.hibernate.ddl-auto=validate
+
+#샘플데이터 쿼리를 실행해서 DB를 초기화 할 때
+#spring.jpa.defer-datasource-initialization=true
+#spring.sql.init.mode=always
+
+#hibernate이 보여주는 로그에 있는 ?값을 구체적으로 보여주는 설정
+logging.level.org.hibernate.type.description.sql=trace
+#Mysql 방언(dialect) 설정하기
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+
+=============================================================================
+entity패키지에 Member 엔티티 만들기
+
+package com.example.jpatest.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Data;
+import lombok.ToString;
+
+@Entity
+@Data
+@ToString
+public class Member {
+    @Id
+    private String memberId;
+    private String memberName;
+    @ManyToOne    >> 다대일 관계 형성
+    @JoinColumn(name="teamId") >> join할 컬럼을 설정(fk로 설정, 그럼 엔티티에 속성 중 클래스로 해도 DB에서는 teamId로 표시됨)
+    private Team team; >> 상대측 클래스를 하나의 컬럼으로 설정
+}
+
+
+=============================================================================
+Team 엔티티 만들기
+
+package com.example.jpatest.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Data;
+
+@Entity
+@Data
+public class Team {
+    @Id
+    private String teamId;
+    private String teamName;
+}
+
+
+=============================================================================
+relationTestService 작성
+
+package com.example.jpatest.service;
+
+import com.example.jpatest.entity.Member;
+import com.example.jpatest.entity.Team;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Temporal;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class RelationTestService {
+    @Autowired
+    EntityManager em;
+
+    public void insertMemberAndTeam(){
+        //새로운 멤버 생성 후 저장
+        Member member = new Member();
+        member.setMemberId("장원영");
+        member.setMemberName("원영");
+        //member.setTeamId("ive");
+        em.persist(member);
+
+        //팀을 생성
+        Team team = new Team();
+        team.setTeamId("ive");
+        team.setTeamName("아이브");
+        em.persist(team);
+    }
+
+    public void insertMemberAndTeamRelation(){
+        Team team = new Team();
+        team.setTeamId("ive");
+        team.setTeamName("아이브");
+        em.persist(team);  >> 영속성 컨텍스트에 저장됨(캐시로 임시저장되는거고 DB에 완전히 저장되는것은 아님)
+
+        Member member = new Member();
+        member.setMemberId("장원영");
+        member.setMemberName("원영");
+        member.setTeam(team);
+        em.persist(member);
+    }
+}
+
+
+=============================================================================
+TEST해보기
+
+package com.example.jpatest.service;
+
+import com.example.jpatest.entity.Member;
+import com.example.jpatest.entity.Team;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
+@SpringBootTest
+class RelationTestServiceTest {
+    @Autowired
+    EntityManager em;
+    @Autowired
+    RelationTestService relationTestService;
+
+    @Test
+    @DisplayName("멤버와 팀 추가 테스트")
+    void insertMemberAndTeam() {
+    relationTestService.insertMemberAndTeam();
+    }
+
+    @Test
+    @DisplayName("ID:장원영의 팀 이름 찾기")
+    void searchTeam(){
+        Member member = em.find(Member.class, "장원영");
+        Team team = em.find(Team.class, member.getTeam().getTeamId());
+        System.out.println("Team Name =====================" + team.getTeamName());
+    }
+
+    @Test
+    @DisplayName("단방향연관관계-데이터입력")
+    void insertMemberAndTeamR(){
+        relationTestService.insertMemberAndTeamRelation();
+    }
+    @Test
+    @DisplayName("단방향설정 후 장원영 팀 이름찾기")
+    public void memberFindTeamName(){
+        Member member = em.find(Member.class, "장원영"); >> member클래스에서 PK로 찾아서 member에 넣어줌
+        System.out.println(member.getTeam().getTeamName());
+        >> 그럼 member안에는 "장원영"에 맞는 memberId, memberName, Team이 담겨있음
+             이에따라 member중 Team을 가져오고 그 중 teamName을 가져올 수 있음
+             이렇게하면 자동으로 join해서 원하는 정보를 가져옴
+    }
+}
+
+=============================================================================
+
+
+for(int i = 0; i<list.size(); i++){
+            currentPrice = (long) calculateParkingFee(list.get(i).getInTime(), LocalDateTime.now());
+            list.set(i, currentPrice);
+        }

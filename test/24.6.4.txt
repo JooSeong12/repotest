@@ -1,0 +1,214 @@
+github에 있는 한글필터xml 복사해서 web.xml 마지막 부분에 붙여넣기
+
+===============================================================================
+한글적용하는 법
+C:\workspace\server\apache-tomcat-8.5.100\conf >> server.xml 메모장으로 열기
+>>  <Connector executor="tomcatThreadPool" 부분에     URIEncoding="UTF_8" 넣고 저장
+
+home.jsp 제일 위에 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>   추가하기
+===============================================================================
+github에 있는pom.xml을 복사해서 
+pom.xml에 붙여넣고
+ <artifactId>js12</artifactId>
+<name>Project-01</name>   으로변경
+
+140번줄에 롬복 버전을 1.18.32로 변경
+===============================================================================
+lombok 설치방법
+lombok 다운로드 검색 후 다운 >> C:\spring-mvc\sts-bundle\sts-3.9.14.RELEASE 폴더안에 jar파일 붙여넣기
+>> cmd 관리자 권한으로 실행 >> java -jar lombok.jar 입력 후 설치창 뜨면 설치
+>> sts 껏다가 다시 실행
+===============================================================================
+
+static 폴더아래 spring > appServlit > mybatis-context.xml 생성 >> gitgub에 있는 mybatis-context.xml 복사해서 붙여넣기
+>> 28번째줄에 <property name="basePackage" value="kr.co.js12.mapper" />  중간에 이름 내걸로 변경
+>> web.xml에서
+<param-value>
+/WEB-INF/spring/root-context.xml
+/WEB-INF/spring/mybatis-context.xml >> 얘를 추가해줘야함 10번째줄 부근에 있음
+</param-value>
+
+===============================================================================
+postgre db생성(testdb)
+
+src/main/resources >> mapper 폴더 생성(패키지라고 생각하면 됨)
+src/main/resources >> config 폴더 생성 >> mybatis-config.xml 파일 생성 >> github에서 복사해서 붙여넣기
+>> <configuration> 안에 alias 삭제
+
+===============================================================================
+kr.co.js12.jspTest 패키지 생성 >> 아래에 CarDto 생성
+package kr.co.js12.jspTest;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CarDto {
+	private String number;
+	private String model;
+	private int engine;
+	
+}
+
+===============================================================================
+controller
+
+package kr.co.js12.jspTest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class CarController {
+	@GetMapping("/car/step1")
+	public String car_Test_01() {
+		return "/jsp-test/step1";
+	}
+}
+
+
+
+===============================================================================
+view > jsp-test폴더생성 > jsp-test폴더안에 step1.jsp 생성
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="kr.co.js12.jspTest.CarDto" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.ArrayList" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<%
+		CarDto car1 = new CarDto("가1234", "소나타", 2000);
+		request.setAttribute("dto", car1);
+	%>
+	
+	<h3>EL(Expression Language) 기본</h3>
+	<strong>1. CarDto에서 변수 model 출력</strong><br>
+	${dto.model}
+	
+<!-- 	맵으로 변수 출력 -->
+	<%
+		HashMap<String, CarDto> map = new HashMap<String, CarDto>();
+		map.put("car1", new CarDto("나2222", "모닝", 1000));
+		session.setAttribute("carMap", map);
+	%>
+	
+	<strong>2. HashMap에서 변수 model 출력</strong><br>
+	${sessionScope.carMap.car1.model}
+	
+	<!-- 	리스트로 변수 출력 -->
+	<%
+		ArrayList<CarDto> list = new ArrayList<CarDto>();
+		list.add(new CarDto("다3333", "테슬라", 3000));
+		session.setAttribute("list", list);
+	%>
+	
+	<strong>3. List에서 변수 model 출력</strong><br>
+	${sessionScope.list[0].model}
+</body>
+</html>
+
+
+===============================================================================
+jstl = thymeleaf
+
+step2-choose.jsp 생성
+
+ctrl + shift + alt + L 하면 퀵서치나옴 >> 거기서 jstl검색 후 첫번재거 선택해서 상단에
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 넣기
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	EL로 name과 age를 출력<br>
+	이름 : ${dto.name} <br>
+	나이 : ${dto.age} <br>
+	
+	<br>
+	
+	JSTL 다중 조건 choose, when, otherwise
+	<br>
+	<c:choose>
+		<c:when test="${dto.name == '아이유'}">
+			아이유가 맞습니다. <br>
+			나이는 ${dto.age}세 입니다.
+		</c:when>
+		<c:when test="${dto.name == '손흥민'}">
+			손흥민이 맞습니다. <br>
+			나이는 ${dto.age}세 입니다.
+		</c:when>
+		<c:otherwise>
+			누군지 모름....
+		</c:otherwise>
+	</c:choose>
+	
+	
+</body>
+</html>
+
+
+===============================================================================
+maven repository 검색 >> 사이트 들어가서 security 검색 >> security core 들어가기 >> 복사
+config, web 복사
+
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+    <version>${org.springframework-version}</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-web</artifactId>
+    <version>${org.springframework-version}</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-config</artifactId>
+    <version>${org.springframework-version}</version>
+</dependency>
+
+pom.xml에서 </dependencies> 위에 붙여넣기(대략 140번째줄)
+
+
+===============================================================================
+spring 폴더 우클릭 >> new >> spring bean configuration file > security-context.xml 만들기
+name sapce이동해서 beans, security 선택
+
+source로 다시 이동해서
+<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+붙여넣기
+
+===============================================================================
+web.xml
+
+<param-value>
+/WEB-INF/spring/root-context.xml
+/WEB-INF/spring/mybatis-context.xml
+/WEB-INF/spring/security-context.xml    >>>> 추가하기
+</param-value>
+
+
+
