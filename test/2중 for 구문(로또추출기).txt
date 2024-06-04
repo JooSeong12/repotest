@@ -1,0 +1,32 @@
+6개의 숫자를 무작위로 추출하고 중복되지않게 정렬에 하나씩 넣는게 목표
+
+랜덤으로 돌려서 추출 >> 정렬에 넣기 >> 랜덤으로 추출 
+>> 전에 나온거랑 중복되지 않는지 검증
+
+>> 중복된다면 리셋 후 다시 추출 >> 6개 저장 후 출력
+
+
+
+        Random random = new Random(); >>  랜덤함수 선언
+        int lotto[] = new int[6]; >> 추출번호 담는 그릇
+        boolean flag; >> do while 변수
+        int num; >> 숫자 그릇
+        for(int i = 0; i<lotto.length; i++) {  >> 로또번호 6개 뽑는 1차 for 반복문
+            do{                                        >> 검증 루프 돌리려고  do while 쓰는거임
+                flag = false;                        >> 검증했는데 중복값이 없으면 do while을 탈출하도록 하려고 쓰는것
+                num = random.nextInt(6) + 1;  >> 랜덤번호 추출 선언
+               for(int j = 0; j < i; j++){            >> j가 i보다 작을 때까지 하는 이유는 검증식이기때문에 공백의 배열까지 검증하지 않기 위함이다.
+                   if(num == lotto[j]){              >> 추출번호가 기존에 배열에 저장된 숫자와 같으면 flag를 true로 인식시켜 다시 추출하도록 하는 것
+                       flag = true;                 >> do while에서 true면 계속 돌리는거기때문에 만약 추출번호와 기존에 저장해놓은 숫자가 같다면 다시 돌리려고 하는것
+                       continue;                    >> 만약 중복되서 true로 판명되면 for구문을 나가서 다시 추출하라는 명령
+                   }                                    >> 만약 중복되지 않으면 j의 다음숫자로 2차 for루프가 돌아가게됨
+                                                             ex) 현재 i가 2 이고 lotto[0] = 10, lotto[1] = 11인 상태에서 추출번호가 11이 나왔다.
+                                                                  그럼 2차 for문에서 j=0부터 12가 lotto[0], lotto[1]까지(2차 for문의 조건문에 j<i 이기 때문에) 중복되는지 루프를 돌릴 것이다.
+                                                                  12 == lotto[0](10)이 아니기 때문에 if문의 flag = true가 적용되지 않고 j=1로 넘어간다.
+                                                                  12 == lotto[1](11)이 아니기 때문에 if문의 flag = true가 적용되지 않고 2차 for문은 끝이나고 
+                                                                  flag는 false인 상태로 끝났기 때문에 do while이 종료되고 num은 12인채로 lotto[2]에 들어간다.
+               }
+
+            }while(flag);            >>>>  
+            lotto[i] = num;       >>>> do while이 끝났을 때 나온 값을 lotto[i]에 저장
+            System.out.println(num);

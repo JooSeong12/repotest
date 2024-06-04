@@ -1,0 +1,22 @@
+ public static void main(String[] args) {
+        int[] bub = {7, 4, 3, 5, 1};                           >> 배열 선언
+        int ex = 0;                                             >> 정수 변수 선언
+
+        for(int i = 0; i< bub.length-1; i++){                >>> 자리확정된 배열숫자들 자리
+            boolean flag = true;                              >>>  true로 선언해서 루프가 계속 돌도록 유도해주는 플래그(깃발이 서있는상태)
+            for(int k =0; k< bub.length-1; k++){           >>> 자리바꾸기 2차 for문
+                if(bub[k] > bub[k+1]){                        >>> bub[k]가 bub[k+1]보다 크면 자리를 바꾼다는 가정식(즉 배열중 앞의 숫자가 뒷 숫자보다 크면 자리를 바꾸려는 if문)
+                    ex = bub[k];                                >>> 비어있는 ex에 bub[k]를 가져오는 것
+                    bub[k] = bub[k+1];                       >>> ex가 가져갔기 때문에 비어있는 bub[k]에 bub[k+1]을 가져오는 것
+                    bub[k+1] = ex;                            >>> 비어있는 bub[k+1]에 ex(최초 bub[k]의 숫자)의 숫자를 가져오면서 자리바꾸기를 완료
+                    flag = false;                                >>> 자리바꾸기를 했으면 뒤의 숫자랑 또 비교를 해야하기때문에 false로 선언해야함(true인상태로 아래로 진행하면 break가 걸려서 for문을 탈출하기때문에 false로 선언)
+                }
+            }
+            if(flag == true)break;                            >>> 더이상 자리바꾸기를 못하면 false로 인식되지않고 true로 현재의 위치까지 내려온것이고 더이상 자리바꾸기를 할 필요가 없으므로 break를 걸어줌
+            System.out.println(i+1 + "번째 회전");       >>> i는 0부터 시작하기때문에 i+1로 표현해주는 것이고 여기에 넣는 이유는 만약 첫번째회전(1차 for 구문이 i=0 루프를 돌고 있을 때)이 끝나고 두번째 회전때(i=1 루프 돌고 있을 때)도 출력을 해주기 위함
+            for(int r : bub){                                   >>> enhanced for 구문으로 bub[] 배열내 모든 숫자를 표시해주는 구문
+                System.out.println(r + "");                  >>> r = bub[] 배열내 모든 숫자를 출력해주는 것이므로 sout안에 r을 넣어서 출력
+            }
+        }
+    }
+}

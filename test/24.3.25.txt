@@ -33,7 +33,7 @@ public class DBConn {
     public static Connection getConnection(){
         if(dbConn == null){
             try {
-                String dbDriver = "com.mysql.cj.jdbc.Driver";
+                String dbDriver = "com.mysql.jdbc.driver";
                 String dbUrl = "jdbc:mysql://localhost:3306/teldb";
                 String dbUser = "teluser";
                 String dbPassword = "1111";
@@ -45,19 +45,6 @@ public class DBConn {
             }
         }
        return dbConn;
-    }
-
-    public static void close(){
-        if(dbConn != null){
-            try {
-                if(! dbConn.isClosed()){
-                    dbConn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            dbConn = null;
-        }
     }
 }
 

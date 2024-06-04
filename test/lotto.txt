@@ -1,0 +1,39 @@
+public class LottoNum2 {
+    public static void main(String[] args) {
+        Random random = new Random();
+//        랜덤 임포트
+        int [] lotto = new int[6];
+//        로또 배열 추가
+        boolean flag;
+//        이후에 사용할 깃발
+        int number;
+//        랜덤을 잠시동안 보관
+        for (int i = 0; i < lotto.length ; i++) {
+//            로또번호 6개
+            do {
+                flag = false;
+//                깃발 초기화
+                number = random.nextInt(45) + 1;
+//                로또 본호 뽑기
+                for (int j = 0; j <i; j++) {
+//                    비어있는 방과도 비교할 필요는 없음
+                    if (number==lotto[j]){
+//                        앞에 나온 숫자들과 비교
+                        flag = true;
+//                      깃발 세우기_깃발이 세워져 있으면 do 안의 구문을 반복
+                        continue;
+//                        중복이 나왔으면 for 구문을 탈출
+                    }
+                }
+            }while (flag);
+//            깃발 확인
+            lotto[i] = number;
+//            중복이 없음을 확인한 번호를 로또 배열 안에 추가
+        }
+//        반복구문 종료
+        
+        for (int i = 0; i < lotto.length ; i++) {
+            System.out.print(lotto[i]);
+        }
+//      로또 번호 출력
+    }

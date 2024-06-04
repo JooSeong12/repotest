@@ -114,15 +114,15 @@ order by 기준필드 asc(오름차순) / desc(내림차순) (Ascending / Descen
 
 ----------------------------------------------------------------------------
 
-티처 테이블에서 id가 3이상인 자료의 이름, 전화번호를 출력하세요
+id가 3이상인 자료의 이름, 전화번호를 출력하세요
 >> select name, phone from professor where id >= 3 order by desc;
 
      select * from professor where id between 1 and 3; >> id가 1~3사이인 자료 출력(between * and *)
 
-학생테이블에서 belong IDE인 자료의 아이디, 이름, 소속을 출력하세요
+belong IDE인 자료의 아이디, 이름, 소속을 출력하세요
 >> select id, name, belong from student where belong = 'IDE';
 
-학생테이블에서 belong이 'IDE' 또는 'ESE'인 자료의 아이디, 이름, 소속을 출력하세요
+belong이 'IDE' 또는 'ESE'인 자료의 아이디, 이름, 소속을 출력하세요
 >> select id, name, belong from student where belong = 'IDE' or belong = 'ESE';
 select id, name, belong from student where belong in('ide','ese'); >> or 안써도 in으로 간략하게 가능
 
@@ -140,7 +140,7 @@ select id, name, belong from student where belong in('ide','ese'); >> or 안써�
 학생테이블에서 id가 2009가 포함되지않은 자료를 출력하세요
 >> select * from student where id not like '2009%';
 
-학생테이블에서 소속이 IDE 또는 CSE 또는 MSC 인 자료 중 id에 2011을 포함하는 자료를 p_id 내림차순으로 출력하세요
+학생테이블에서 소속이 IDE 또는 CSE 또는 MSC 인 자료 중 id에 2011을 포함하는 자료를 내림차순으로 출력하세요
 (출력은 id, 이름, 소속, 전화번호, 교수_ID로 column이름이 나타나도록 출력)
 >> select id, name '이름', belong '소속', tell '전화번호', p_id '교수_id'
 from student where belong in('ide', 'cse', 'mse') and id like '2011%' order by p_id desc;
