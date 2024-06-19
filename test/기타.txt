@@ -1,0 +1,165 @@
+acmlpl 목돈마련
+dpstpl 예금
+loan 대출
+
+prod_ds_sn 상품코드
+int_cty_cd
+pay_ty_cd 납입주기 pay_cycle
+circle_acml_amt 불입금액
+int_tax_ty_cd 과세분류
+tot_dpst_amt 불입금액 합계
+tot_dpst_int 세전이자
+int_tax_amt 이자과세금
+atx_rcve_amt 세후수령액
+sbstg_ty_cd 가입대상
+ntsl_amt_min 최소금액
+ntsl_amt_max 최대금액
+prod_air_beg_ymd 시작일
+prod_air_end_ymd 종료일
+
+planlist, product, customer, 
+
+	   a.plan_no     planlist
+             , a.prod_cd      product
+	 , a.prod_nm     prodduct
+	, a.cust_mbl_telno     customer
+             , 1 as int_cty_cd    X
+	 , a.pay_cycle     product
+	, 0 as circle_acml_amt   X
+	, a.pay_period      product
+	, 0 as aply_rate    X
+	, 1 as int_tax_ty_cd   X
+	 , 0 as tot_dpst_amt   X
+	 , 0 as tot_dpst_int    X
+	, 0 as int_tax_amt    X 
+	 , 0 as atx_rcve_amtx     X
+	, to_char(current_date,'yyyy-mm-dd') wrt_dt    X
+	, b.prod_type    product
+	 , b.sub_tg    product
+	 , b.price_min    product
+	 , b.price_max    product
+	 , b.air_min      product(interest_no)
+	 , b.air_max     product(interest_no)
+	 , b.sale_beg_dt    product
+	 , b.sale_end_dt    product
+	  from kcgbd.tb_proddsgnsavgpl a
+	    , kcgbd.tb_prodmst b
+	 where a.prod_cd = b.prod_cd 
+
+
+
+<body>
+   <div id="vueapp"> <!-- id = vue 에서 el 에 해당하는 부분 -->
+      <template>
+         <div class="form-group">
+            <label for="title">제목</label>
+            <div>
+               <input type="text" id="title" v-model="notice.title">
+            </div>
+         </div>
+
+         <div class="form-group">
+            <label for="content">내용</label>
+            <div>
+               <textarea rows="5" id="content" v-model="notice.content"
+                  placeholder="내용을 입력하세요."></textarea>
+            </div>
+         </div>
+
+         <div class="form-group">
+            <div>
+               <button type="button" @click="save">
+                  저장
+               </button>
+            </div>
+         </div>
+
+      </template>
+   </div>
+
+   <script>
+   var vueapp = new Vue({
+      el: "#vueapp",
+      data: {
+         notice: {
+            title: "",
+            content: ""
+         }
+      },
+      mounted: function() {
+         // 필요한 경우 초기화 작업 수행
+      },
+      methods: {
+         save: function () {
+            // 제목과 내용이 비어있는지 검사
+            if (!this.notice.title.trim()) {
+               alert("제목을 입력하세요.");
+               return;
+            }
+            if (!this.notice.content.trim()) {
+               alert("내용을 입력하세요.");
+               return;
+            }
+
+
+            // 저장 요청 보내기
+            if (!confirm("저장하시겠습니까?")) return;
+            <!-- 제목과 내용을 params 에 넣어서 ctl로 보내는곳  -->
+            var params = {
+               title: this.notice.title,
+               content: this.notice.content
+            };
+            
+            console.log(params);
+            <!-- ctl -> /save와 연결됨 -->
+            axios.post("/system/team4/notice/save", {params:params})
+               .then(response => {
+                  if (response.data.status === "OK") {
+                     alert("저장되었습니다.");
+                     window.location.href = '/system/team4/notice/'; // 저장 후 목록으로 이동
+                  } else {
+                     alert("저장 실패: " + response.data.message);
+                  }
+               })
+               .catch(error => {
+                  alert("오류 발생: " + error);
+               });
+         }
+      }
+   });
+   </script>
+
+</body>
+</html>
+
+   컨트롤러 부분
+
+   @PostMapping("/save")
+   public CmmnMap noticeInsertPost(CmmnMap params) {
+      System.out.println("controller log = "+ params);
+      return t4NoticeMng_Svc.insertNotice(params);
+   }
+
+   서비스 부분
+     public CmmnMap insertNotice(CmmnMap params) {
+        System.out.println("======================================== insert first log = "+params);
+           String notice_title = params.getString("title");
+           String notice_content = params.getString("content");
+
+           params.put("notice_title", notice_title);
+           params.put("notice_content", notice_content);
+           
+           cmmnDao.insert("system.t4_notice_mng.insertNotice", params);
+
+           return new CmmnMap().put("status", "OK");
+       }
+
+
+   sql 부분
+   <insert id="insertNotice" parameterType="cmmnMap">
+      INSERT INTO kcgbd.db4_notice
+      (notice_title, notice_content, regis_date, cor_date)
+      VALUES(#{notice_title}, #{notice_content}, CURRENT_DATE, CURRENT_DATE);
+   </insert>
+
+
